@@ -6,6 +6,7 @@
 <title>Videos</title>
 <style>
 body { margin:0; font-family: Arial,sans-serif; background:#f0f8ff; }
+
 header {
     background:#0B3D91;
     color:white;
@@ -26,13 +27,16 @@ header h1 {
     margin-right:10px;
     user-select:none;
 }
+
 .container {
-    max-width:800px;
+    max-width:900px;
     margin:20px auto;
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:16px;
+    padding:0 12px;
 }
+
 .button {
     display:flex;
     align-items:center;
@@ -50,6 +54,7 @@ header h1 {
     transition: transform 0.2s, background 0.2s;
 }
 .button:hover { transform:translateY(-3px); background:#e6f2ff; }
+
 .file-card {
     display:flex;
     align-items:center;
@@ -66,6 +71,36 @@ header h1 {
     grid-column:1 / -1;
 }
 .file-card:hover { transform:translateY(-2px); background:#e6f2ff; }
+
+/* Course image cards */
+.course-card {
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    cursor:pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.course-card:hover {
+    transform:translateY(-3px);
+    box-shadow:0 5px 14px rgba(0,0,0,0.2);
+}
+.course-card img {
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    display:block;
+    background:#dbeafe;
+}
+.course-title {
+    padding:12px;
+    text-align:center;
+    font-weight:bold;
+    color:#0B3D91;
+    font-size:15px;
+}
+
+/* Preview */
 #previewContainer {
     width: 100%;
     height: 50vh;
@@ -79,7 +114,12 @@ header h1 {
     border-bottom-right-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-#previewContainer iframe { width: 100%; height: 100%; border: none; border-radius: inherit; }
+#previewContainer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: inherit;
+}
 #closePreview {
     position: absolute;
     top: 10px;
@@ -94,6 +134,17 @@ header h1 {
     z-index: 1001;
 }
 #closePreview:hover { background:#d32f2f; }
+
+/* Mobile */
+@media (max-width: 600px){
+    .container {
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+    }
+    .course-card img {
+        height:110px;
+    }
+}
 </style>
 </head>
 <body>
@@ -123,6 +174,7 @@ const firebaseConfig = {
   appId: "1:886538300649:web:d2bfde3c4e141a95085478",
   measurementId: "G-GTYWCZTJMW"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -135,6 +187,15 @@ const closePreview = document.getElementById("closePreview");
 let selectedTerm = null;
 let selectedCourse = null;
 
+// LOCAL COURSE IMAGES FROM YOUR PROJECT FOLDER
+const courseImages = {
+    "BCH210": "210.jpg",
+    "BCH220": "220.jpg",
+    "BCH230": "230.jpg",
+    "BCH250": "250.jpg",
+    "BCH240": "240.jpg"
+};
+
 // Close preview
 closePreview.onclick = () => {
     previewContainer.style.display = "none";
@@ -143,78 +204,116 @@ closePreview.onclick = () => {
 
 // Back button logic
 backBtn.onclick = () => {
-    if(selectedCourse){
+    if (selectedCourse) {
         selectedCourse = null;
         loadContent();
-    } else if(selectedTerm){
+    } else if (selectedTerm) {
         selectedTerm = null;
         loadContent();
     }
 };
 
 // Load hierarchical content
-function loadContent(){
+function loadContent() {
     content.innerHTML = "";
     backBtn.style.display = (selectedTerm || selectedCourse) ? "inline-block" : "none";
 
-    db.collection("videos").get().then(snapshot=>{
-        const allData = snapshot.docs.map(d=>d.data());
+    db.collection("videos").get().then(snapshot => {
+        const allData = snapshot.docs.map(d => d.data());
 
-        if(!selectedTerm){
+        if (!selectedTerm) {
             // Show terms
-            const terms = [...new Set(allData.map(d=>d.term))].sort((a,b)=>a-b);
-            if(terms.length===0){ content.innerHTML="<p>No videos uploaded yet.</p>"; return; }
-            terms.forEach(term=>{
+            const terms = [...new Set(allData.map(d => d.term))].sort((a,b) => a - b);
+            if (terms.length === 0) {
+                content.innerHTML = "<p>No videos uploaded yet.</p>";
+                return;
+            }
+
+            terms.forEach(term => {
                 const btn = document.createElement("button");
-                btn.className="button";
-                btn.textContent="Term "+term;
-                btn.onclick=()=> { selectedTerm=term; loadContent(); };
+                btn.className = "button";
+                btn.textContent = "Term " + term;
+                btn.onclick = () => {
+                    selectedTerm = term;
+                    loadContent();
+                };
                 content.appendChild(btn);
             });
             return;
         }
 
-        if(!selectedCourse){
-            // Show courses for selected term
-            const courses = [...new Set(allData.filter(d=>d.term===selectedTerm).map(d=>d.course))].sort();
-            courses.forEach(course=>{
-                const btn = document.createElement("button");
-                btn.className="button";
-                btn.textContent=course;
-                btn.onclick=()=> { selectedCourse=course; loadContent(); };
-                content.appendChild(btn);
+        if (!selectedCourse) {
+            // Show courses for selected term with IMAGES
+            const termData = allData.filter(d => d.term === selectedTerm);
+
+            const uniqueCourses = [...new Map(
+                termData.map(item => [item.course, item])
+            ).values()];
+
+            if (uniqueCourses.length === 0) {
+                content.innerHTML = "<p>No courses found for this term.</p>";
+                return;
+            }
+
+            uniqueCourses.sort((a, b) => a.course.localeCompare(b.course));
+
+            uniqueCourses.forEach(item => {
+                const course = item.course;
+                const imageUrl = courseImages[course] || "images/default-course.jpg";
+
+                const card = document.createElement("div");
+                card.className = "course-card";
+                card.onclick = () => {
+                    selectedCourse = course;
+                    loadContent();
+                };
+
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${course}" onerror="this.src='images/default-course.jpg'">
+                    <div class="course-title">${course}</div>
+                `;
+
+                content.appendChild(card);
             });
+
             return;
         }
 
         // Show videos for selected term + course
-        let videos = allData.filter(d=>d.term===selectedTerm && d.course===selectedCourse);
-        videos.sort((a,b)=>(a.order||999)-(b.order||999));
+        let videos = allData.filter(d => d.term === selectedTerm && d.course === selectedCourse);
+        videos.sort((a,b) => (a.order || 999) - (b.order || 999));
 
-        if(videos.length===0){ content.innerHTML="<p>No videos found for this selection</p>"; return; }
+        if (videos.length === 0) {
+            content.innerHTML = "<p>No videos found for this selection</p>";
+            return;
+        }
 
-        videos.forEach(video=>{
+        videos.forEach(video => {
             const card = document.createElement("div");
-            card.className="file-card";
-            card.textContent = `${video.order!==undefined && video.order!==999 ? video.order+". " : ""}${video.title}`;
-            card.onclick = ()=>openVideo(video.link);
+            card.className = "file-card";
+            card.textContent = `${video.order !== undefined && video.order !== 999 ? video.order + ". " : ""}${video.title}`;
+            card.onclick = () => openVideo(video.link);
             content.appendChild(card);
         });
+    }).catch(err => {
+        content.innerHTML = "<p style='color:red;'>Error loading videos: " + err.message + "</p>";
     });
 }
 
 // Open video in half-screen
-function openVideo(link){
+function openVideo(link) {
     const id = extractDriveId(link);
-    if(id){
+    if (id) {
         previewIframe.src = `https://drive.google.com/file/d/${id}/preview`;
-        previewContainer.style.display="block";
-    } else alert("Invalid video link");
+        previewContainer.style.display = "block";
+    } else {
+        alert("Invalid video link");
+    }
 }
 
 // Extract Google Drive ID
-function extractDriveId(url){
-    const match = url.match(/[-\w]{25,}/);
+function extractDriveId(url) {
+    const match = url.match(/[-\\w]{25,}/);
     return match ? match[0] : "";
 }
 
