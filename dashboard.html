@@ -1,158 +1,769 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard | NS Mentorship</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>BCh Mentorship</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#f0f8ff; }
-.header { display:flex; align-items:center; justify-content:space-between; background:#0B3D91; color:white; padding:15px 20px; }
-.header .hamburger, .header .logout { font-size:22px; cursor:pointer; }
-.header-center { flex:1; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.header .title { font-size:22px; font-weight:bold; margin-bottom:5px; }
-.header .welcome { font-size:18px; margin-bottom:3px; }
-.header .countdown { font-size:16px; color:white; opacity:0.9; }
-.menu { position:fixed; top:0; left:0; width:260px; height:100%; background:#fff; box-shadow:2px 0 6px rgba(0,0,0,0.2); padding-top:20px; transform:translateX(-100%); transition:transform 0.3s ease; z-index:1000; display:flex; flex-direction:column; }
-.menu.open { transform:translateX(0); }
-.menu-top { text-align:center; padding:20px 0; border-bottom:1px solid #e3ebf5; }
-.menu-logo { width:100px; border-radius:50%; }
-.menu a { display:block; padding:15px 20px; text-decoration:none; color:#333; font-size:16px; }
-.menu a i { margin-right:10px; color:#0B3D91; }
-.menu a:hover { background:#e3ebf5; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px; padding:20px; }
-.card { background:white; padding:30px 20px; text-align:center; border-radius:14px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.08); transition:0.2s; }
-.card i { font-size:30px; color:#0B3D91; margin-bottom:10px; }
-.card span { display:block; font-size:16px; font-weight:500; }
-.card:hover { background:#eef3fa; }
-#whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:white; border-radius:50%; width:60px; height:60px; display:flex; justify-content:center; align-items:center; font-size:30px; box-shadow:0 3px 6px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; }
-#adminLink { display:none; }
+:root{
+  --ink:#0b1622;--ink2:#1a2e45;--ink3:#243d57;
+  --sky:#1a6fa8;--sky2:#155886;--sky3:rgba(26,111,168,.1);
+  --gold:#c9a227;--gold2:rgba(201,162,39,.14);
+  --fog:#f2f6fb;--fog2:#e8eef7;--fog3:#dde5f0;
+  --white:#fff;--text:#0b1622;--text2:#3a5068;--text3:#7a93ab;
+  --red:#e05454;--red2:rgba(224,84,84,.1);--green:#1a9e6e;--green2:rgba(26,158,110,.1);
+  --whatsapp:#25d366;
+  --r:16px;--r2:12px;--r3:100px;
+  --sh:0 2px 14px rgba(11,22,34,.08);--nav:70px;--hdr:62px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.shell{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--fog);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.14)}
+.topbar{height:var(--hdr);background:var(--ink);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:30;position:relative}
+.tb-logo{display:flex;align-items:center;gap:10px}
+.tb-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:#fff;flex-shrink:0}
+.tb-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff}
+.tb-name span{color:var(--gold)}
+.tb-r{display:flex;align-items:center;gap:9px}
+.tb-btn{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);cursor:pointer;font-size:.85rem;position:relative;transition:all .18s}
+.tb-btn:active{transform:scale(.92)}
+.tb-pip{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--ink);display:none}
+.tb-pip.on{display:block}
+.tb-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:#fff;cursor:pointer;transition:transform .18s;overflow:hidden;flex-shrink:0}
+.tb-av img{width:100%;height:100%;object-fit:cover}
+.tb-av:active{transform:scale(.92)}
+.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:calc(var(--nav)+12px)}
+.body::-webkit-scrollbar{display:none}
+.pg{display:none;padding:16px 15px 0;animation:pgIn .28s cubic-bezier(.4,0,.2,1) both}
+.pg.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.bnav{height:var(--nav);background:var(--white);border-top:1px solid var(--fog3);padding:0 4px;padding-bottom:max(env(safe-area-inset-bottom,0px),6px);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;z-index:20}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:8px 4px;border-radius:12px;border:none;background:transparent;transition:all .2s}
+.ntab:active{transform:scale(.9)}
+.ntab:disabled{opacity:.35;cursor:not-allowed}
+.nico{font-size:1.15rem;color:var(--text3);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.nlbl{font-size:.58rem;font-weight:600;color:var(--text3);transition:color .2s}
+.nbar{width:20px;height:2.5px;background:var(--sky);border-radius:2px;transform:scaleX(0);transition:transform .25s cubic-bezier(.34,1.56,.64,1);margin-top:2px}
+.ntab.on .nico{color:var(--sky);transform:scale(1.2)}
+.ntab.on .nlbl{color:var(--sky);font-weight:700}
+.ntab.on .nbar{transform:scaleX(1)}
+.lock-badge{position:absolute;top:2px;right:18%;font-size:.55rem;color:var(--red)}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;font-weight:600;color:var(--text);margin:18px 0 11px;display:flex;align-items:center;justify-content:space-between}
+.stitle a{font-size:.7rem;font-style:normal;font-family:'DM Sans',sans-serif;color:var(--sky);font-weight:600;cursor:pointer;text-decoration:none}
+
+/* ═══ SUBSCRIBE LOCK SCREEN ═══ */
+.lock-screen{text-align:center;padding:30px 10px}
+.lock-icon{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--ink),var(--ink2));display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--gold);margin:0 auto 1.3rem;box-shadow:0 8px 24px rgba(11,22,34,.2)}
+.lock-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;font-weight:700;color:var(--text);margin-bottom:.6rem}
+.lock-sub{font-size:.85rem;color:var(--text3);line-height:1.7;margin-bottom:1.6rem;padding:0 8px}
+.lock-status-card{background:var(--white);border-radius:var(--r);padding:1.2rem;border:1px solid var(--fog3);box-shadow:var(--sh);margin-bottom:1.4rem;text-align:left}
+.lock-status-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--fog3)}
+.lock-status-row:last-child{border-bottom:none}
+.lock-status-row i{width:20px;text-align:center;color:var(--sky)}
+.lock-status-label{font-size:.82rem;color:var(--text2);flex:1}
+.lock-status-val{font-size:.82rem;font-weight:700;color:var(--text)}
+.btn-subscribe{width:100%;padding:15px;background:linear-gradient(135deg,var(--sky),var(--sky2));border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:800;font-size:.95rem;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(26,111,168,.3);transition:all .2s}
+.btn-subscribe:active{transform:scale(.97)}
+.price-pill{display:inline-flex;align-items:center;gap:6px;background:var(--gold2);border:1px solid rgba(201,162,39,.3);color:#8a6a10;padding:.4rem 1rem;border-radius:var(--r3);font-size:.78rem;font-weight:700;margin-bottom:1.2rem}
+
+/* ═══ SUBSCRIPTION MODAL ═══ */
+.sub-ov{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:300;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.sub-ov.on{display:flex}
+.sub-modal{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-height:90vh;display:flex;flex-direction:column;animation:slideUpModal .3s cubic-bezier(.4,0,.2,1)}
+@keyframes slideUpModal{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sub-modal-handle{width:36px;height:4px;background:var(--fog3);border-radius:2px;margin:13px auto 0}
+.sub-modal-hdr{padding:14px 20px 6px;display:flex;align-items:center;justify-content:space-between}
+.sub-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;font-weight:700;color:var(--text)}
+.sub-modal-x{width:30px;height:30px;border-radius:8px;background:var(--fog);border:1px solid var(--fog3);color:var(--text2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.sub-modal-body{flex:1;overflow-y:auto;padding:10px 20px 24px}
+.sub-fg{margin-bottom:1rem}
+.sub-fg label{display:block;font-weight:600;font-size:.74rem;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+.sub-fg input,.sub-fg textarea{width:100%;padding:.78rem 1rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s}
+.sub-fg textarea{resize:vertical;min-height:80px}
+.sub-fg input:focus,.sub-fg textarea:focus{border-color:var(--sky);background:var(--white)}
+.course-pick-list{display:flex;flex-direction:column;gap:.5rem;max-height:180px;overflow-y:auto;border:1.5px solid var(--fog3);border-radius:var(--r2);padding:.6rem;background:var(--fog)}
+.course-pick-item{display:flex;align-items:center;gap:.6rem;padding:.4rem .5rem;border-radius:8px;transition:background .15s}
+.course-pick-item:hover{background:var(--fog3)}
+.course-pick-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--sky);cursor:pointer}
+.course-pick-item label{font-size:.83rem;color:var(--text);cursor:pointer;flex:1}
+.price-summary{background:var(--gold2);border:1px solid rgba(201,162,39,.25);border-radius:var(--r2);padding:.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.price-summary-label{font-size:.78rem;color:#8a6a10;font-weight:600}
+.price-summary-val{font-size:1.1rem;color:#6a4e10;font-weight:800}
+.txn-note{background:var(--sky3);border:1px solid rgba(26,111,168,.2);border-radius:var(--r2);padding:.8rem 1rem;font-size:.76rem;color:var(--sky2);line-height:1.6;margin-bottom:1rem}
+.btn-submit-sub{width:100%;padding:14px;background:var(--ink);border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(11,22,34,.2);transition:all .2s;margin-bottom:.9rem}
+.btn-submit-sub:active{transform:scale(.97)}
+.whatsapp-note{display:flex;align-items:center;gap:.6rem;justify-content:center;padding:.85rem;background:var(--green2);border:1px solid rgba(26,158,110,.2);border-radius:var(--r2);text-decoration:none;transition:all .2s}
+.whatsapp-note:active{transform:scale(.97)}
+.whatsapp-note i{font-size:1.2rem;color:var(--whatsapp)}
+.whatsapp-note span{font-size:.78rem;color:var(--green);font-weight:600}
+.sub-alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:1rem;display:none;line-height:1.5}
+.sub-alert.err{background:#fff1f1;border:1px solid rgba(224,84,84,.2);color:var(--red);display:block}
+.sub-alert.ok{background:#f0faf5;border:1px solid rgba(26,158,110,.25);color:var(--green);display:block}
+.spinner-sm{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUBSCRIPTION STATUS PENDING SCREEN */
+.pending-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold2);border:1px solid rgba(201,162,39,.3);color:#8a6a10;padding:.5rem 1.1rem;border-radius:var(--r3);font-size:.8rem;font-weight:700;margin-bottom:1.4rem}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 100%);border-radius:20px;padding:20px;margin:4px 0 6px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,168,.3),transparent 70%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:11px;background:rgba(26,111,168,.2);border:1px solid rgba(26,111,168,.35);color:#7ec8f8;padding:3px 10px;border-radius:var(--r3);font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.hpulse{width:5px;height:5px;background:#7ec8f8;border-radius:50%;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.6)}}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-style:italic;line-height:1.2;color:#fff;margin-bottom:7px}
+.hero-h em{color:#7ec8f8}
+.hero-sub{font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:16px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.hs{background:rgba(255,255,255,.06);border-radius:11px;padding:9px 5px;text-align:center;border:1px solid rgba(255,255,255,.08)}
+.hs-n{font-weight:800;font-size:1rem;color:#7ec8f8}
+.hs-l{font-size:.58rem;color:rgba(255,255,255,.45);margin-top:2px}
+.qstrip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.qstrip::-webkit-scrollbar{display:none}
+.qcard{flex-shrink:0;width:78px;background:var(--white);border-radius:var(--r);padding:12px 8px;text-align:center;border:1px solid var(--fog3);cursor:pointer;transition:all .2s;box-shadow:var(--sh)}
+.qcard:active{transform:scale(.93);background:var(--fog)}
+.qico{font-size:1.5rem;margin-bottom:5px;color:var(--sky)}
+.qlbl{font-size:.6rem;font-weight:700;color:var(--text2);line-height:1.3}
+.qcnt{font-size:.57rem;color:var(--sky);font-weight:700;margin-top:2px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:4px}
+.sc{background:var(--white);border-radius:var(--r);padding:15px;border:1px solid var(--fog3);box-shadow:var(--sh);position:relative;overflow:hidden}
+.sc-ico{font-size:1.25rem;color:var(--sky);margin-bottom:7px}
+.sc-n{font-weight:800;font-size:1.4rem;color:var(--text)}
+.sc-l{font-size:.64rem;color:var(--text3);margin-top:2px}
+.rlist{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.ritem{display:flex;align-items:center;gap:11px;background:var(--white);border-radius:14px;padding:13px;border:1px solid var(--fog3);cursor:pointer;transition:all .2s;box-shadow:var(--sh)}
+.ritem:active{transform:scale(.98);background:var(--fog)}
+.rico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.rinfo{flex:1;min-width:0}
+.rt{font-weight:700;font-size:.84rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rs{font-size:.68rem;color:var(--text3);margin-top:2px}
+.rbadge{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:var(--r3);flex-shrink:0}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text3)}
+.empty i{font-size:2.5rem;display:block;margin-bottom:.75rem;opacity:.3}
+.empty p{font-size:.8rem;line-height:1.6}
+.shim{border-radius:12px;background:linear-gradient(90deg,var(--fog3) 25%,var(--fog2) 50%,var(--fog3) 75%);background-size:200% 100%;animation:shim 1.4s infinite}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.csearch{display:flex;align-items:center;gap:9px;background:var(--white);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--fog3);margin:6px 0 10px;box-shadow:var(--sh)}
+.csico{font-size:.9rem;color:var(--text3)}
+.csinput{flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text);caret-color:var(--sky)}
+.csinput::placeholder{color:var(--text3)}
+.clist{display:flex;flex-direction:column;gap:9px}
+.ci{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);overflow:hidden;cursor:pointer;box-shadow:var(--sh);transition:all .2s}
+.ci-top{display:flex;align-items:center;gap:12px;padding:14px 15px}
+.ci-em{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.ci-nm{font-weight:700;font-size:.92rem;color:var(--text)}
+.ci-cd{font-size:.68rem;color:var(--text3);margin-top:2px}
+.ci-arr{margin-left:auto;color:var(--text3);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.ci.open .ci-arr{transform:rotate(90deg)}
+.ci-body{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
+.ci.open .ci-body{max-height:600px}
+.ci-chips{display:flex;flex-wrap:wrap;gap:7px;padding:12px 15px;border-top:1px solid var(--fog3)}
+.chip{padding:5px 12px;background:var(--sky3);border:1px solid rgba(26,111,168,.2);border-radius:var(--r3);font-size:.67rem;font-weight:600;color:var(--sky);cursor:pointer;transition:all .18s}
+.chip:active{background:var(--sky);color:#fff}
+.viewer{position:fixed;inset:0;background:#000;z-index:999;display:none;flex-direction:column}
+.viewer.on{display:flex}
+.viewer-bar{height:56px;background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
+.viewer-title{font-weight:600;font-size:.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72%}
+.viewer-close{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.viewer-frame{flex:1;border:none;background:#1a1a2e}
+.ov{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:50;display:none;backdrop-filter:blur(4px)}
+.ov.on{display:block}
+.drw{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-radius:22px 22px 0 0;z-index:60;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:88vh;display:flex;flex-direction:column;border-top:1px solid var(--fog3);box-shadow:0 -8px 40px rgba(11,22,34,.15)}
+.drw.on{transform:translateY(0)}
+.drw-handle{width:36px;height:4px;background:var(--fog3);border-radius:2px;margin:13px auto 0}
+.drw-hdr{padding:13px 18px 0;display:flex;align-items:center;justify-content:space-between}
+.drw-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;font-weight:600;color:var(--text)}
+.drw-x{width:30px;height:30px;border-radius:8px;background:var(--fog);border:1px solid var(--fog3);color:var(--text2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.dtabs{display:flex;gap:6px;padding:11px 18px 5px;overflow-x:auto;scrollbar-width:none}
+.dtabs::-webkit-scrollbar{display:none}
+.dtab{flex-shrink:0;padding:5px 12px;border-radius:var(--r3);border:1px solid var(--fog3);background:var(--white);font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .18s}
+.dtab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.drw-body{flex:1;overflow-y:auto;padding:6px 18px 24px;scrollbar-width:none}
+.drw-body::-webkit-scrollbar{display:none}
+.ri2{display:flex;align-items:center;gap:11px;padding:12px;background:var(--fog);border-radius:12px;margin-bottom:7px;border:1px solid var(--fog3);cursor:pointer;transition:all .18s}
+.ri2:active{transform:scale(.98)}
+.ri2-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ri2-nm{flex:1;font-weight:600;font-size:.82rem;color:var(--text)}
+.ri2-sub{font-size:.66rem;color:var(--text3);margin-top:1px}
+.obtn{padding:4px 11px;background:var(--sky3);border:1px solid rgba(26,111,168,.2);border-radius:var(--r3);font-family:'DM Sans',sans-serif;font-size:.67rem;font-weight:700;color:var(--sky);cursor:pointer;flex-shrink:0}
+.obtn:active{background:var(--sky);color:#fff}
+.rmodes{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:8px 0 4px}
+.rmode{background:var(--white);border-radius:var(--r);padding:15px;border:1px solid var(--fog3);cursor:pointer;transition:all .2s;box-shadow:var(--sh);position:relative;overflow:hidden}
+.rmode:active{transform:scale(.96)}
+.rmode-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+.rm-ico{font-size:1.6rem;margin-bottom:8px}
+.rm-t{font-weight:700;font-size:.87rem;color:var(--text);margin-bottom:3px}
+.rm-d{font-size:.64rem;color:var(--text3);line-height:1.5}
+.rm-bar{height:3px;background:var(--fog3);border-radius:2px;margin-top:9px;overflow:hidden}
+.rm-fill{height:100%;border-radius:2px}
+.vlist{display:flex;flex-direction:column;gap:9px}
+.vitem{background:var(--white);border-radius:var(--r);padding:14px;border:1px solid var(--fog3);box-shadow:var(--sh);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.vitem:active{transform:scale(.98)}
+.vthumb{width:54px;height:38px;border-radius:8px;background:var(--ink2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
+.vinfo{flex:1;min-width:0}
+.vnm{font-weight:700;font-size:.85rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vcrs{font-size:.68rem;color:var(--text3);margin-top:2px}
+.vplay{width:30px;height:30px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;flex-shrink:0}
+.fc-wrap{perspective:800px;margin:14px 0 8px}
+.fc-inner{position:relative;height:185px;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;border-radius:20px;padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;cursor:pointer}
+.fc-front{background:var(--ink);border:1px solid var(--ink3)}
+.fc-back{background:linear-gradient(135deg,var(--ink2),var(--ink));transform:rotateY(180deg);border:1px solid rgba(26,111,168,.3)}
+.fc-q{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;color:#fff;line-height:1.45;margin-bottom:9px;font-weight:600}
+.fc-hint{font-size:.66rem;color:rgba(255,255,255,.4);font-weight:600}
+.fc-a{font-size:.82rem;color:rgba(255,255,255,.88);line-height:1.6}
+.fc-btns{display:flex;gap:9px}
+.fcb{flex:1;padding:11px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;transition:all .18s}
+.fcb:active{transform:scale(.95)}
+.fcb-n{background:#fff1f1;color:var(--red);border:1px solid rgba(224,84,84,.2)}
+.fcb-y{background:#f0faf5;color:var(--green);border:1px solid rgba(26,158,110,.2)}
+.fc-meta{text-align:center;font-size:.66rem;color:var(--text3);margin:8px 0 3px}
+.fc-dots{display:flex;gap:4px;justify-content:center;margin-bottom:11px}
+.fcd{width:6px;height:6px;border-radius:50%;background:var(--fog3);transition:all .2s}
+.fcd.on{background:var(--sky);width:18px;border-radius:3px}
+.yfilters{display:flex;gap:7px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.yfilters::-webkit-scrollbar{display:none}
+.yf{flex-shrink:0;padding:6px 14px;border-radius:var(--r3);border:1px solid var(--fog3);background:var(--white);font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .18s}
+.yf.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pcards{display:flex;flex-direction:column;gap:9px}
+.pcard{background:var(--white);border-radius:var(--r);padding:15px;border:1px solid var(--fog3);box-shadow:var(--sh)}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+.pc-yr{background:var(--ink);color:#fff;font-weight:800;font-size:.68rem;padding:3px 10px;border-radius:var(--r3)}
+.pc-cr{font-size:.67rem;color:var(--text3);font-weight:600}
+.pc-t{font-weight:700;font-size:.91rem;color:var(--text);margin-bottom:3px}
+.pc-m{font-size:.68rem;color:var(--text3);margin-bottom:11px}
+.pc-acts{display:flex;gap:7px}
+.pab{flex:1;padding:8px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.67rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+.pab:active{transform:scale(.95)}
+.pa1{background:var(--sky3);color:var(--sky);border:1px solid rgba(26,111,168,.2)}
+.pa2{background:var(--gold2);color:#9a7a1a;border:1px solid rgba(201,162,39,.2)}
+.pa3{background:var(--green2);color:var(--green);border:1px solid rgba(26,158,110,.2)}
+.prof-hero{background:var(--ink);border-radius:20px;padding:22px;margin:4px 0 10px;text-align:center;position:relative;overflow:hidden}
+.prof-hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,168,.2),transparent 70%)}
+.pav-wrap{position:relative;width:78px;margin:0 auto 12px}
+.pav{width:78px;height:78px;border-radius:20px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.65rem;color:#fff;box-shadow:0 6px 20px rgba(26,111,168,.35);border:2px solid rgba(26,111,168,.4);overflow:hidden;cursor:pointer}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pav-edit{position:absolute;bottom:-4px;right:-4px;width:24px;height:24px;border-radius:50%;background:var(--sky);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;cursor:pointer}
+#photoFileInput{display:none}
+.pname{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:#fff;margin-bottom:5px}
+.puni{display:inline-flex;align-items:center;gap:5px;background:rgba(26,111,168,.18);border:1px solid rgba(26,111,168,.3);color:#7ec8f8;padding:4px 12px;border-radius:var(--r3);font-size:.67rem;font-weight:700}
+
+/* COUNTDOWN CARD */
+.countdown-card{background:linear-gradient(135deg,#0f3d2a,#091e38);border-radius:20px;padding:18px;margin:4px 0 14px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(26,158,110,.25)}
+.countdown-card.expiring{background:linear-gradient(135deg,#3d1f0f,#380e09);border-color:rgba(224,84,84,.3)}
+.countdown-card.expired{background:linear-gradient(135deg,#3d0f0f,#380909);border-color:rgba(224,84,84,.4)}
+.countdown-label{font-size:.68rem;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.countdown-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:#7ec8f8;line-height:1}
+.countdown-card.expiring .countdown-num{color:#ffb380}
+.countdown-card.expired .countdown-num{color:#ff8080}
+.countdown-unit{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:.3rem}
+.countdown-date{font-size:.7rem;color:rgba(255,255,255,.4);margin-top:.6rem}
+
+.ifields{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.irow{background:var(--white);border-radius:13px;padding:12px 14px;border:1px solid var(--fog3);display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.irow.ed{border-left:2.5px solid var(--sky)}
+.irow.locked{opacity:.7}
+.iico{font-size:.95rem;width:24px;text-align:center;flex-shrink:0;color:var(--sky)}
+.ilbl{font-size:.6rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.iinput{width:100%;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--text)}
+.lock-note{font-size:.68rem;color:var(--text3);margin-top:5px;display:flex;align-items:center;gap:.3rem}
+.echips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.ec{padding:5px 12px;background:var(--sky3);border:1px solid rgba(26,111,168,.18);border-radius:var(--r3);font-size:.69rem;font-weight:600;color:var(--sky)}
+.btn-save{width:100%;padding:13px;background:var(--ink);border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(11,22,34,.2);transition:all .2s;margin-bottom:9px}
+.btn-save:active{transform:scale(.97)}
+.btn-out{width:100%;padding:13px;background:var(--red2);border:1px solid rgba(224,84,84,.2);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:var(--red);cursor:pointer;transition:all .2s}
+.btn-admin{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#a8841f);border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:800;font-size:.9rem;color:var(--ink);cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(201,162,39,.3);margin-bottom:9px;text-decoration:none}
+.btn-admin:active{transform:scale(.97)}
+.btn-out:active{transform:scale(.97)}
+.ann-card{background:linear-gradient(135deg,var(--ink2),var(--ink3));border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid rgba(26,111,168,.2)}
+.ann-t{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:4px}
+.ann-b{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.6}
+.ann-meta{font-size:.62rem;color:rgba(255,255,255,.35);margin-top:6px}
+.splash{position:absolute;inset:0;background:var(--ink);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s}
+.splash.off{opacity:0;pointer-events:none}
+.sl{width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:#fff;box-shadow:0 0 28px rgba(26,111,168,.45);animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.sn{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:#fff}
+.sn span{color:var(--gold)}
+.sdots{display:flex;gap:6px}
+.sd{width:7px;height:7px;border-radius:50%;background:var(--sky);animation:bop .6s ease infinite alternate}
+.sd:nth-child(2){animation-delay:.15s}.sd:nth-child(3){animation-delay:.3s}
+@keyframes bop{to{transform:translateY(-7px);opacity:.35}}
+.toast{position:absolute;bottom:calc(var(--nav)+14px);left:14px;right:14px;background:var(--ink);border:1px solid var(--ink3);border-radius:13px;padding:11px 16px;font-size:.79rem;font-weight:600;color:#fff;text-align:center;z-index:400;transform:translateY(16px);opacity:0;transition:all .27s;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}
 </style>
 </head>
 <body>
-
-<div id="sideMenu" class="menu">
-    <div class="menu-top"><img src="beng.jpg" alt="Logo" class="menu-logo"></div>
-    <a href="about.html"><i class="fa-solid fa-phone"></i>Contact Us</a>
-    <a href="motivation.html"><i class="fa-solid fa-lightbulb"></i>Motivation</a>
-    <a href="ca_calculator.html"><i class="fa-solid fa-calculator"></i>CA-Calculator</a>
-    <a href="user.html" id="adminLink"><i class="fa-solid fa-user-shield"></i>Admin</a>
-</div>
-
-<div class="header">
-    <div class="hamburger"><i class="fa-solid fa-bars"></i></div>
-    <div class="header-center">
-        <div class="title">BCH MENTORSHIP HUB</div>
-        <div class="welcome">Welcome, <strong id="username">User</strong></div>
-        <div class="countdown" id="countdown">Loading countdown...</div>
+<div class="shell" id="shell">
+  <div class="splash" id="splash"><div class="sl">B</div><div class="sn">BCh <span>Mentorship</span></div><div class="sdots"><div class="sd"></div><div class="sd"></div><div class="sd"></div></div></div>
+  <header class="topbar">
+    <div class="tb-logo"><div class="tb-mark">B</div><div class="tb-name">BCh <span>Mentorship</span></div></div>
+    <div class="tb-r">
+      <div class="tb-btn" id="notifBtn" onclick="goPage('home')"><i class="fas fa-bell"></i><div class="tb-pip" id="notifPip"></div></div>
+      <div class="tb-av" id="tbAv" onclick="goPage('profile')"><span id="tbAvInitials">?</span></div>
     </div>
-    <div class="logout"><i class="fa-solid fa-power-off"></i></div>
-</div>
+  </header>
+  <div class="body" id="appBody">
 
-<div class="grid">
-    <div class="card" onclick="location.href='video.html'"><i class="fa-solid fa-play"></i><span>Video</span></div>
-    <div class="card" onclick="location.href='doc.html'"><i class="fa-solid fa-folder-open"></i><span>Documents</span></div>
-    <div class="card" onclick="location.href='quiz.html'"><i class="fa-solid fa-circle-question"></i><span>Quiz</span></div>
-    <div class="card" onclick="location.href='paper.html'"><i class="fa-solid fa-box-archive"></i><span>Past Papers</span></div>
-</div>
+    <!-- HOME (subscription-gated) -->
+    <div class="pg on" id="pg-home">
+      <div id="lockScreenWrap"></div>
+      <div id="homeContentWrap" style="display:none">
+        <div class="hero">
+          <div class="hero-badge"><div class="hpulse"></div><span id="heroBadge">Loading…</span></div>
+          <div class="hero-h">Study Smart,<br><em>Score Higher.</em></div>
+          <div class="hero-sub" id="heroSub">Access course materials, past papers and revision tools.</div>
+          <div class="hero-stats">
+            <div class="hs"><div class="hs-n" id="hsCourses">—</div><div class="hs-l">Courses</div></div>
+            <div class="hs"><div class="hs-n" id="hsResources">—</div><div class="hs-l">Resources</div></div>
+            <div class="hs"><div class="hs-n" id="hsPapers">—</div><div class="hs-l">Papers</div></div>
+            <div class="hs"><div class="hs-n" id="hsCards">—</div><div class="hs-l">Flashcards</div></div>
+          </div>
+        </div>
+        <div class="stitle">Quick Access</div>
+        <div class="qstrip">
+          <div class="qcard" onclick="goPage('courses')"><div class="qico"><i class="fas fa-book-open"></i></div><div class="qlbl">Courses</div><div class="qcnt" id="qcCourses">—</div></div>
+          <div class="qcard" onclick="goPage('videos')"><div class="qico"><i class="fas fa-video"></i></div><div class="qlbl">Videos</div><div class="qcnt" id="qcVideos">—</div></div>
+          <div class="qcard" onclick="goPage('papers')"><div class="qico"><i class="fas fa-scroll"></i></div><div class="qlbl">Papers</div><div class="qcnt" id="qcPapers">—</div></div>
+          <div class="qcard" onclick="goPage('revision')"><div class="qico"><i class="fas fa-layer-group"></i></div><div class="qlbl">Flashcards</div><div class="qcnt" id="qcCards">—</div></div>
+          <div class="qcard" onclick="goPage('home')"><div class="qico"><i class="fas fa-bullhorn"></i></div><div class="qlbl">Notices</div><div class="qcnt" id="qcAnn">—</div></div>
+        </div>
+        <div class="stitle">Announcements</div>
+        <div id="annList"><div class="shim" style="height:80px;margin-bottom:8px"></div></div>
+        <div class="stitle">Recent Resources <a onclick="goPage('courses')">See all</a></div>
+        <div class="rlist" id="recentList"><div class="shim" style="height:65px;margin-bottom:8px"></div><div class="shim" style="height:65px;margin-bottom:8px"></div></div>
+      </div>
+    </div>
 
-<div id="whatsapp" onclick="window.open('https://chat.whatsapp.com/https://chat.whatsapp.com/IeTKtIOTiTRCw3Hqn3Bf05?mode=gi_t','_blank')"><i class="fa-brands fa-whatsapp"></i></div>
+    <div class="pg" id="pg-courses"><div class="csearch"><span class="csico"><i class="fas fa-search"></i></span><input class="csinput" id="csInput" placeholder="Search courses…" oninput="filterCourses(this.value)"/></div><div class="clist" id="clist"><div class="shim" style="height:80px;margin-bottom:9px"></div></div></div>
+    <div class="pg" id="pg-videos"><div class="stitle" style="margin-top:10px">Video Lessons</div><div class="vlist" id="videoList"><div class="shim" style="height:70px;margin-bottom:9px"></div></div></div>
+    <div class="pg" id="pg-revision">
+      <div class="stitle" style="margin-top:10px">Revision Modes</div>
+      <div class="rmodes">
+        <div class="rmode"><div class="rmode-stripe" style="background:var(--sky)"></div><div class="rm-ico"><i class="fas fa-layer-group" style="color:var(--sky)"></i></div><div class="rm-t">Flashcards</div><div class="rm-d" id="fcModeDesc">Loading…</div><div class="rm-bar"><div class="rm-fill" style="background:var(--sky);width:0%" id="fcProgress"></div></div></div>
+        <div class="rmode" onclick="goPage('papers')"><div class="rmode-stripe" style="background:var(--gold)"></div><div class="rm-ico"><i class="fas fa-scroll" style="color:var(--gold)"></i></div><div class="rm-t">Past Papers</div><div class="rm-d" id="ppModeDesc">Loading…</div><div class="rm-bar"><div class="rm-fill" style="background:var(--gold);width:100%"></div></div></div>
+        <div class="rmode" onclick="goPage('videos')"><div class="rmode-stripe" style="background:var(--red)"></div><div class="rm-ico"><i class="fas fa-video" style="color:var(--red)"></i></div><div class="rm-t">Videos</div><div class="rm-d" id="vidModeDesc">Loading…</div><div class="rm-bar"><div class="rm-fill" style="background:var(--red);width:100%"></div></div></div>
+        <div class="rmode" onclick="goPage('courses')"><div class="rmode-stripe" style="background:var(--green)"></div><div class="rm-ico"><i class="fas fa-book-open" style="color:var(--green)"></i></div><div class="rm-t">Course Notes</div><div class="rm-d" id="notesModeDesc">Loading…</div><div class="rm-bar"><div class="rm-fill" style="background:var(--green);width:100%"></div></div></div>
+      </div>
+      <div class="stitle">Flashcard Practice</div>
+      <div id="fcArea"><div class="shim" style="height:185px;border-radius:20px"></div></div>
+    </div>
+    <div class="pg" id="pg-papers"><div class="yfilters" id="yfilters"><button class="yf on" onclick="filterPapers('All',this)">All</button></div><div class="pcards" id="pcards"><div class="shim" style="height:130px;margin-bottom:9px"></div></div></div>
+
+    <!-- PROFILE (always accessible) -->
+    <div class="pg" id="pg-profile">
+      <div class="prof-hero">
+        <div class="pav-wrap">
+          <div class="pav" id="profAv" onclick="triggerPhotoUpload()"><span id="profAvInitials">?</span></div>
+          <div class="pav-edit" onclick="triggerPhotoUpload()"><i class="fas fa-camera"></i></div>
+        </div>
+        <input type="file" id="photoFileInput" accept="image/*" onchange="uploadProfilePhoto(this)"/>
+        <div class="pname" id="profName">Loading…</div>
+        <div class="puni" id="profUni">University</div>
+      </div>
+
+      <!-- COUNTDOWN -->
+      <div id="countdownWrap"></div>
+
+      <div class="stitle" style="margin-top:4px">My Information</div>
+      <div class="ifields">
+        <div class="irow ed"><span class="iico"><i class="fas fa-user"></i></span><div style="flex:1"><div class="ilbl">Full Name</div><input class="iinput" id="pName" type="text"/></div></div>
+        <div class="irow"><span class="iico"><i class="fas fa-envelope"></i></span><div style="flex:1"><div class="ilbl">Email</div><input class="iinput" id="pEmail" type="email" readonly/></div></div>
+        <div class="irow ed"><span class="iico"><i class="fas fa-phone"></i></span><div style="flex:1"><div class="ilbl">Phone</div><input class="iinput" id="pPhone" type="tel" placeholder="+260 97x xxx xxx"/></div></div>
+        <div class="irow locked"><span class="iico"><i class="fas fa-university"></i></span><div style="flex:1"><div class="ilbl">University <span style="color:var(--text3);font-size:.58rem">(admin managed)</span></div><input class="iinput" id="pUni" type="text" readonly/></div></div>
+        <div class="irow locked"><span class="iico"><i class="fas fa-graduation-cap"></i></span><div style="flex:1"><div class="ilbl">Program <span style="color:var(--text3);font-size:.58rem">(admin managed)</span></div><input class="iinput" id="pProgram" type="text" readonly/></div></div>
+        <div class="irow locked"><span class="iico"><i class="fas fa-calendar"></i></span><div style="flex:1"><div class="ilbl">Year of Study <span style="color:var(--text3);font-size:.58rem">(admin managed)</span></div><input class="iinput" id="pYear" type="text" readonly/></div></div>
+        <div class="irow"><span class="iico"><i class="fas fa-id-card"></i></span><div style="flex:1"><div class="ilbl">Student ID</div><input class="iinput" id="pSid" type="text"/></div></div>
+      </div>
+      <div class="lock-note"><i class="fas fa-lock" style="color:var(--sky)"></i> University, program and year can only be changed by your administrator.</div>
+
+      <div id="subscribeBtnWrap" style="margin-top:18px"></div>
+
+      <div class="stitle" style="margin-top:14px" id="enrolledTitle">Enrolled Courses</div>
+      <div class="echips" id="echips"></div>
+      <div style="height:16px"></div>
+      <div id="adminBtnWrap"></div>
+      <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i>&nbsp; Save Changes</button>
+      <button class="btn-out" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out</button>
+      <div style="height:10px"></div>
+    </div>
+
+  </div>
+  <nav class="bnav">
+    <button class="ntab on" id="nt-home" onclick="goPage('home')"><div class="nico"><i class="fas fa-house"></i></div><div class="nlbl">Home</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-courses" onclick="goPage('courses')"><div class="nico"><i class="fas fa-book-open"></i></div><div class="nlbl">Courses</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-revision" onclick="goPage('revision')"><div class="nico"><i class="fas fa-brain"></i></div><div class="nlbl">Revision</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-papers" onclick="goPage('papers')"><div class="nico"><i class="fas fa-scroll"></i></div><div class="nlbl">Papers</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-profile" onclick="goPage('profile')"><div class="nico"><i class="fas fa-user-circle"></i></div><div class="nlbl">Profile</div><div class="nbar"></div></button>
+  </nav>
+  <div class="ov" id="ov" onclick="closeDrawer()"></div>
+  <div class="drw" id="drw">
+    <div class="drw-handle"></div>
+    <div class="drw-hdr"><div class="drw-title" id="drwTitle">Resources</div><button class="drw-x" onclick="closeDrawer()"><i class="fas fa-times"></i></button></div>
+    <div class="dtabs" id="dtabs"></div>
+    <div class="drw-body" id="drwBody"></div>
+  </div>
+  <div class="viewer" id="viewer">
+    <div class="viewer-bar"><div class="viewer-title" id="viewerTitle">Document</div><button class="viewer-close" onclick="closeViewer()"><i class="fas fa-times"></i></button></div>
+    <iframe class="viewer-frame" id="viewerFrame" allowfullscreen></iframe>
+  </div>
+
+  <!-- SUBSCRIBE MODAL -->
+  <div class="sub-ov" id="subOv" onclick="if(event.target===this)closeSubModal()">
+    <div class="sub-modal">
+      <div class="sub-modal-handle"></div>
+      <div class="sub-modal-hdr"><div class="sub-modal-title">Subscribe to Courses</div><button class="sub-modal-x" onclick="closeSubModal()"><i class="fas fa-times"></i></button></div>
+      <div class="sub-modal-body">
+        <div class="sub-alert" id="subAlert"></div>
+        <div class="sub-fg">
+          <label>Select Courses to Enroll</label>
+          <div class="course-pick-list" id="coursePickList"><div style="font-size:.8rem;color:var(--text3)">Loading courses…</div></div>
+        </div>
+        <div class="price-summary"><div class="price-summary-label" id="priceLabel">0 courses selected</div><div class="price-summary-val" id="priceVal">K0</div></div>
+        <div class="sub-fg">
+          <label>Transaction ID</label>
+          <input type="text" id="txnId" placeholder="e.g. MTN12345678 or paste reference"/>
+        </div>
+        <div class="sub-fg">
+          <label>Additional Note (optional)</label>
+          <textarea id="subNote" placeholder="Any extra info for the admin…"></textarea>
+        </div>
+        <div class="txn-note"><i class="fas fa-info-circle"></i> Pay K30 per course/month via Mobile Money, then paste your Transaction ID above. Your subscription will be activated once the admin verifies the payment.</div>
+        <button class="btn-submit-sub" id="submitSubBtn" onclick="submitSubscription()"><i class="fas fa-paper-plane"></i> Submit Subscription Request</button>
+        <a href="https://wa.me/260768037965" target="_blank" rel="noopener" class="whatsapp-note"><i class="fab fa-whatsapp"></i><span>For quick response, text the admin on WhatsApp: 0768037965</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-const firebaseConfig = {
- apiKey: "AIzaSyC1YH0tA8mO3qujnps8p5UbgMix91tO5-U",
-  authDomain: "biochemistry-b4b77.firebaseapp.com",
-  projectId: "biochemistry-b4b77",
-  storageBucket: "biochemistry-b4b77.firebasestorage.app",
-  messagingSenderId: "886538300649",
-  appId: "1:886538300649:web:d2bfde3c4e141a95085478",
-  measurementId: "G-GTYWCZTJMW"  
-};
+const cfg={apiKey:"AIzaSyC1YH0tA8mO3qujnps8p5UbgMix91tO5-U",authDomain:"biochemistry-b4b77.firebaseapp.com",projectId:"biochemistry-b4b77",storageBucket:"biochemistry-b4b77.appspot.com",messagingSenderId:"886538300649",appId:"1:886538300649:web:d2bfde3c4e141a95085478",measurementId:"G-GTYWCZTJMW"};
+const CLOUDINARY_CLOUD="dpm7avyrl", CLOUDINARY_PRESET="Unplug";
+const fapp=initializeApp(cfg),auth=getAuth(fapp),db=getFirestore(fapp);
+let CU=null,PROF=null,IS_SUBSCRIBED=false,DAYS_LEFT=null;
+let COURSES=[],RESOURCES=[],PAPERS=[],FLASHCARDS=[],ANNOUNCEMENTS=[],VIDEOS=[],PROGRAM_COURSES=[];
+const $=id=>document.getElementById(id);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const typeIcon={notes:'📄',pdf:'📕',slides:'🖥️',tutorial:'📋',assignment:'✏️',practical:'🔬',revision:'💡',quiz:'🧩',video:'🎥',other:'📁'};
+const typeBg={notes:'rgba(26,111,168,.1)',pdf:'rgba(201,162,39,.12)',slides:'rgba(124,58,237,.1)',tutorial:'rgba(26,158,110,.1)',assignment:'rgba(224,84,84,.1)',practical:'rgba(26,111,168,.1)',other:'rgba(26,111,168,.1)'};
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+function gdrivePrev(url){
+  if(!url)return '';
+  const m1=url.match(/\/d\/([a-zA-Z0-9_-]+)/),m2=url.match(/id=([a-zA-Z0-9_-]+)/);
+  const id=(m1&&m1[1])||(m2&&m2[1]);
+  if(id)return `https://drive.google.com/file/d/${id}/preview`;
+  const yt=url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if(yt)return `https://www.youtube.com/embed/${yt[1]}`;
+  return url;
+}
+window.openViewer=function(title,url){$('viewerTitle').textContent=title;$('viewerFrame').src=gdrivePrev(url);$('viewer').classList.add('on');};
+window.closeViewer=function(){$('viewer').classList.remove('on');$('viewerFrame').src='';};
 
-/* Sidebar toggle */
-const sideMenu = document.getElementById("sideMenu");
-const hamburger = document.querySelector('.hamburger');
-hamburger.onclick = () => sideMenu.classList.toggle("open");
-
-/* Click outside closes sidebar */
-document.addEventListener('click', e=>{
-    if(!sideMenu.contains(e.target) && !hamburger.contains(e.target)){
-        sideMenu.classList.remove("open");
-    }
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='login.html';return;}
+  CU=u;
+  const s=await getDoc(doc(db,'users',u.uid));
+  PROF=s.exists()?s.data():{fullName:u.displayName||'Student',university:'—',program:'—',yearOfStudy:'—',studentId:'—',email:u.email,registeredCourses:[],profilePhoto:'',phone:''};
+  if(PROF.canLogin===false||PROF.status==='banned'){await signOut(auth);location.href='login.html';return;}
+  checkSubscriptionStatus();
+  fillUI(PROF);
+  await loadAllData();
+  renderAccessGate();
+  setTimeout(()=>$('splash').classList.add('off'),600);
 });
 
-/* Close sidebar on link click */
-sideMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', ()=>{
-    sideMenu.classList.remove("open");
-}));
+function checkSubscriptionStatus(){
+  IS_SUBSCRIBED=PROF.isSubscribed===true;
+  if(PROF.dueDate){
+    const due=new Date(PROF.dueDate);const now=new Date();
+    const diffMs=due-now;
+    DAYS_LEFT=Math.ceil(diffMs/(1000*60*60*24));
+    if(DAYS_LEFT<=0){IS_SUBSCRIBED=false;}
+  } else {
+    DAYS_LEFT=null;
+  }
+}
 
-/* Logout */
-document.querySelector('.logout').onclick = async ()=>{
-    await signOut(auth);
-    window.location.href = "login.html";
+function fillUI(p){
+  const nm=p.fullName||'Student';const ini2=ini(nm);
+  $('tbAvInitials').textContent=ini2;
+  if(p.profilePhoto){const img=document.createElement('img');img.src=p.profilePhoto;$('tbAv').innerHTML='';$('tbAv').appendChild(img);}
+  $('heroBadge').textContent=p.university||'University';
+  $('heroSub').textContent=`${p.program||''} · ${p.yearOfStudy||''}`;
+  $('profAvInitials').textContent=ini2;
+  if(p.profilePhoto){const img=document.createElement('img');img.src=p.profilePhoto;$('profAv').innerHTML='';$('profAv').appendChild(img);}
+  $('profName').textContent=nm;
+  $('profUni').textContent=p.university||'University';
+  $('pName').value=nm;$('pEmail').value=p.email||CU.email;$('pPhone').value=p.phone||'';
+  $('pProgram').value=p.program||'';$('pUni').value=p.university||'';$('pYear').value=p.yearOfStudy||'';$('pSid').value=p.studentId||'';
+  renderCountdown();
+  renderSubscribeButton();
+  renderAdminButton(p);
+}
+
+function renderAdminButton(p){
+  const wrap=$('adminBtnWrap');
+  if(p.role==='admin'){
+    wrap.innerHTML=`<a href="admin.html" class="btn-admin"><i class="fas fa-user-shield"></i> Open Admin Panel</a>`;
+  } else {
+    wrap.innerHTML='';
+  }
+}
+
+function renderCountdown(){
+  const wrap=$('countdownWrap');
+  if(!PROF.dueDate){wrap.innerHTML='';return;}
+  const due=new Date(PROF.dueDate);
+  const dateStr=due.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  let cls='',label='',num=DAYS_LEFT,unit='days remaining';
+  if(DAYS_LEFT<=0){cls='expired';label='Subscription Status';num='Expired';unit='Please renew your subscription';}
+  else if(DAYS_LEFT<=5){cls='expiring';label='Access Expiring Soon';unit=DAYS_LEFT===1?'day remaining':'days remaining';}
+  else{label='Access Valid For';unit=DAYS_LEFT===1?'day remaining':'days remaining';}
+  wrap.innerHTML=`<div class="countdown-card ${cls}"><div class="countdown-label">${label}</div><div class="countdown-num">${num}</div><div class="countdown-unit">${unit}</div><div class="countdown-date">Expires on ${dateStr}</div></div>`;
+}
+
+function renderSubscribeButton(){
+  const wrap=$('subscribeBtnWrap');
+  if(IS_SUBSCRIBED){
+    wrap.innerHTML=`<button class="btn-subscribe" style="background:linear-gradient(135deg,var(--green),#0f7a52)" onclick="openSubModal()"><i class="fas fa-plus-circle"></i> Subscribe to More Courses</button>`;
+  } else {
+    wrap.innerHTML=`<button class="btn-subscribe" onclick="openSubModal()"><i class="fas fa-credit-card"></i> Subscribe Now</button>`;
+  }
+}
+
+// ── ACCESS GATE ──
+function renderAccessGate(){
+  const lockWrap=$('lockScreenWrap'), homeWrap=$('homeContentWrap');
+  // disable nav tabs except home & profile
+  ['nt-courses','nt-revision','nt-papers'].forEach(id=>{
+    const el=$(id);
+    if(!IS_SUBSCRIBED){el.disabled=true;el.style.opacity='.35';}
+    else{el.disabled=false;el.style.opacity='1';}
+  });
+  if(IS_SUBSCRIBED){
+    lockWrap.style.display='none';homeWrap.style.display='block';
+    return;
+  }
+  homeWrap.style.display='none';
+  lockWrap.style.display='block';
+  const uni=PROF.university||'your university',prog=PROF.program||'your program';
+  let statusHtml='';
+  if(PROF.subscriptionStatus==='pending'){
+    statusHtml=`<div class="pending-badge"><i class="fas fa-clock"></i> Subscription Pending Approval</div>`;
+  }
+  lockWrap.innerHTML=`
+    <div class="lock-screen">
+      <div class="lock-icon"><i class="fas fa-lock"></i></div>
+      <div class="lock-title">Unlock Full Access</div>
+      <div class="lock-sub">Subscribe to your courses to access notes, videos, past papers and revision tools tailored to <strong>${prog}</strong> at <strong>${uni}</strong>.</div>
+      ${statusHtml}
+      <div class="price-pill"><i class="fas fa-tag"></i> K30 per course / month</div>
+      <div class="lock-status-card">
+        <div class="lock-status-row"><i class="fas fa-university"></i><div class="lock-status-label">University</div><div class="lock-status-val">${PROF.university||'—'}</div></div>
+        <div class="lock-status-row"><i class="fas fa-graduation-cap"></i><div class="lock-status-label">Program</div><div class="lock-status-val">${PROF.program||'—'}</div></div>
+        <div class="lock-status-row"><i class="fas fa-user-circle"></i><div class="lock-status-label">Account Status</div><div class="lock-status-val" style="color:var(--gold)">Unsubscribed</div></div>
+      </div>
+      <button class="btn-subscribe" onclick="openSubModal()"><i class="fas fa-credit-card"></i> Subscribe Now</button>
+    </div>`;
+}
+
+// ── PROFILE PHOTO ──
+window.triggerPhotoUpload=()=>$('photoFileInput').click();
+window.uploadProfilePhoto=async function(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];showToast('Uploading photo…');
+  try{
+    const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUDINARY_PRESET);
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.secure_url){await updateDoc(doc(db,'users',CU.uid),{profilePhoto:data.secure_url});PROF.profilePhoto=data.secure_url;fillUI(PROF);showToast('✅ Profile photo updated!');}
+    else{showToast('Upload failed. Try again.');}
+  }catch(e){showToast('Upload error: '+e.message);}
 };
 
-/* Auth check & countdown */
-onAuthStateChanged(auth, async user=>{
-    if(!user) return window.location.href="login.html";
+window.saveProfile=async()=>{
+  if(!CU)return;
+  const d={fullName:$('pName').value.trim(),phone:$('pPhone').value.trim(),studentId:$('pSid').value.trim()};
+  await updateDoc(doc(db,'users',CU.uid),d);
+  Object.assign(PROF,d);fillUI(PROF);showToast('✅ Profile saved!');
+};
+window.doLogout=async()=>{await signOut(auth);location.href='login.html';};
 
-    const snap = await getDoc(doc(db,"users",user.uid));
-    const userData = snap.exists()? snap.data() : null;
-    if(!userData) return alert("User data not found!");
+// ── SUBSCRIBE MODAL ──
+window.openSubModal=async function(){
+  $('subOv').classList.add('on');
+  clrSubAlert();
+  $('txnId').value='';$('subNote').value='';
+  // Load courses for this user's program
+  try{
+    const cSnap=await getDocs(query(collection(db,'courses'),orderBy('name')));
+    const all=cSnap.docs.map(d=>({id:d.id,...d.data()}));
+    PROGRAM_COURSES=all.filter(c=>c.program===PROF.program&&c.school===PROF.university);
+  }catch(e){PROGRAM_COURSES=[];}
+  renderCoursePickList();
+};
+window.closeSubModal=()=>$('subOv').classList.remove('on');
+function clrSubAlert(){$('subAlert').className='sub-alert';}
+function setSubAlert(msg,type){const el=$('subAlert');el.textContent=msg;el.className='sub-alert '+type;}
 
-    // Block disabled users
-    if(userData.disabled){
-        alert("Your account is pending approval. Please contact admin.");
-        await signOut(auth);
-        window.location.href = "login.html";
-        return;
-    }
+function renderCoursePickList(){
+  const el=$('coursePickList');
+  if(!PROGRAM_COURSES.length){el.innerHTML='<div style="font-size:.8rem;color:var(--text3)">No courses available yet. Contact the admin.</div>';return;}
+  el.innerHTML=PROGRAM_COURSES.map(c=>`<div class="course-pick-item"><input type="checkbox" id="pick-${c.id}" value="${c.name}" onchange="updatePriceSummary()"/><label for="pick-${c.id}">${c.icon||'📚'} ${c.name}</label></div>`).join('');
+  updatePriceSummary();
+}
+window.updatePriceSummary=function(){
+  const checked=PROGRAM_COURSES.filter(c=>$('pick-'+c.id)?.checked);
+  const n=checked.length;
+  $('priceLabel').textContent=n+' course'+(n!==1?'s':'')+' selected';
+  $('priceVal').textContent='K'+(n*30);
+};
 
-    // Show username
-    document.getElementById("username").innerText = userData.name || "User";
+window.submitSubscription=async function(){
+  clrSubAlert();
+  const checked=PROGRAM_COURSES.filter(c=>$('pick-'+c.id)?.checked).map(c=>c.name);
+  const txnId=$('txnId').value.trim();
+  if(!checked.length){setSubAlert('Please select at least one course','err');return;}
+  if(!txnId){setSubAlert('Please enter your transaction ID','err');return;}
+  const btn=$('submitSubBtn');btn.disabled=true;btn.innerHTML='<span class="spinner-sm"></span>Submitting…';
+  try{
+    await addDoc(collection(db,'subscriptions'),{
+      uid:CU.uid,fullName:PROF.fullName,email:PROF.email||CU.email,phone:PROF.phone||'',
+      studentId:PROF.studentId||'',university:PROF.university||'',program:PROF.program||'',yearOfStudy:PROF.yearOfStudy||'',
+      requestedCourses:checked,transactionId:txnId,note:$('subNote').value.trim(),
+      status:'pending',submittedAt:serverTimestamp(),
+    });
+    await updateDoc(doc(db,'users',CU.uid),{subscriptionStatus:'pending'});
+    PROF.subscriptionStatus='pending';
+    setSubAlert('✅ Subscription request submitted! You will be notified once approved.','ok');
+    showToast('✅ Request submitted!');
+    setTimeout(()=>{closeSubModal();renderAccessGate();},1500);
+  }catch(e){setSubAlert('Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Subscription Request';
+};
 
-    // Admin link
-    if(userData.role === "admin") document.getElementById("adminLink").style.display = "block";
+// ── LOAD ALL DATA ──
+async function loadAllData(){
+  try{
+    const [cS,rS,pS,fS,aS,vS]=await Promise.all([
+      getDocs(query(collection(db,'courses'),orderBy('name'))),
+      getDocs(query(collection(db,'resources'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'pastpapers'),orderBy('year','desc'))),
+      getDocs(query(collection(db,'flashcards'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'videos'),orderBy('createdAt','desc'))),
+    ]);
+    let allCourses=cS.docs.map(d=>({id:d.id,...d.data()}));
+    // Strict scoping: only show content matching the student's own school + program
+    const mine=item=>item.program===PROF.program&&item.school===PROF.university;
+    COURSES=allCourses.filter(mine);
+    RESOURCES=rS.docs.map(d=>({id:d.id,...d.data()})).filter(mine);
+    PAPERS=pS.docs.map(d=>({id:d.id,...d.data()})).filter(mine);
+    FLASHCARDS=fS.docs.map(d=>({id:d.id,...d.data()})).filter(item=>!item.school&&!item.program?true:mine(item));
+    ANNOUNCEMENTS=aS.docs.map(d=>({id:d.id,...d.data()}));
+    VIDEOS=vS.docs.map(d=>({id:d.id,...d.data()})).filter(mine);
+  }catch(e){console.warn(e);}
+  const restricted=PROF.restrictedCourses||[];
+  COURSES=COURSES.filter(c=>!restricted.includes(c.id)&&!restricted.includes(c.name));
+  $('hsCourses').textContent=COURSES.length;$('hsResources').textContent=RESOURCES.length;
+  $('hsPapers').textContent=PAPERS.length;$('hsCards').textContent=FLASHCARDS.length;
+  $('qcCourses').textContent=COURSES.length;$('qcVideos').textContent=VIDEOS.length;
+  $('qcPapers').textContent=PAPERS.length;$('qcCards').textContent=FLASHCARDS.length;$('qcAnn').textContent=ANNOUNCEMENTS.length;
+  if(ANNOUNCEMENTS.length)$('notifPip').classList.add('on');
+  const cs=(PROF.registeredCourses&&PROF.registeredCourses.length)?PROF.registeredCourses:COURSES.slice(0,4).map(c=>c.name);
+  $('echips').innerHTML=cs.map(c=>`<div class="ec">${c}</div>`).join('');
+  renderAnnouncements();renderRecentResources();renderCourses(COURSES);renderVideos();renderRevisionMode();renderFlashcards();renderPapers('All');
+}
 
-    // Countdown based on trialEndDate
-    if(!userData.trialEndDate){
-        document.getElementById("countdown").innerText="No access info";
-        return;
-    }
-
-    const countdownEl = document.getElementById("countdown");
-    function updateCountdown(){
-        const now = new Date();
-        const endTime = userData.trialEndDate.toDate ? userData.trialEndDate.toDate() : new Date(userData.trialEndDate);
-        const diff = endTime - now;
-
-        if(diff <= 0){
-            countdownEl.innerText = "Access expired!";
-            alert("Your access has expired!");
-            signOut(auth);
-            window.location.href="login.html";
-            return;
-        }
-
-        const d = Math.floor(diff/(1000*60*60*24));
-        const h = Math.floor((diff/(1000*60*60))%24);
-        const m = Math.floor((diff/(1000*60))%60);
-        const s = Math.floor((diff/1000)%60);
-        countdownEl.innerText = `${d}d ${h}h ${m}m ${s}s left`;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown,1000);
-});
+function renderAnnouncements(){
+  const el=$('annList');
+  if(!ANNOUNCEMENTS.length){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No announcements yet</p></div>';return;}
+  el.innerHTML=ANNOUNCEMENTS.slice(0,4).map(a=>`<div class="ann-card"><div class="ann-t">${a.title||''}</div><div class="ann-b">${a.body||''}</div><div class="ann-meta">${a.target||'All Students'} · ${a.priority||''}</div></div>`).join('');
+}
+function renderRecentResources(){
+  const el=$('recentList');
+  if(!RESOURCES.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=RESOURCES.slice(0,5).map(r=>`<div class="ritem" onclick="openViewer('${(r.title||'').replace(/'/g,"\\'")}','${r.driveLink||r.url||''}')"><div class="rico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div class="rinfo"><div class="rt">${r.title||'Untitled'}</div><div class="rs">${r.course||''} · ${r.type||''}</div></div><i class="fas fa-chevron-right" style="color:var(--text3);font-size:.75rem"></i></div>`).join('');
+}
+function renderCourses(list){
+  const el=$('clist');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="fas fa-book-open"></i><p>No courses available for your program yet</p></div>';return;}
+  const colors=['rgba(26,111,168,.1)','rgba(26,158,110,.1)','rgba(201,162,39,.12)','rgba(124,58,237,.1)','rgba(224,84,84,.1)'];
+  const icons=['🧬','🦠','🔬','🧪','🫀','⚗️','🧫','📊'];
+  el.innerHTML=list.map((c,i)=>{
+    const cRes=RESOURCES.filter(r=>r.course===c.name||r.courseId===c.id);
+    const types=[...new Set(cRes.map(r=>r.type).filter(Boolean))];
+    return `<div class="ci" id="ci-${c.id}"><div class="ci-top" onclick="toggleC('${c.id}')"><div class="ci-em" style="background:${colors[i%colors.length]}">${c.icon||icons[i%icons.length]}</div><div><div class="ci-nm">${c.name}</div><div class="ci-cd">${c.code||''} · ${cRes.length} resource${cRes.length!==1?'s':''}</div></div><div class="ci-arr"><i class="fas fa-chevron-right"></i></div></div><div class="ci-body"><div class="ci-chips">${types.length?types.map(t=>`<div class="chip" onclick="openDrawer('${c.id}','${t}')">${t}</div>`).join(''):'<span style="font-size:.74rem;color:var(--text3)">No resources yet</span>'}</div></div></div>`;
+  }).join('');
+}
+window.toggleC=id=>{document.querySelectorAll('.ci').forEach(el=>{if(el.id!=='ci-'+id)el.classList.remove('open');});document.getElementById('ci-'+id).classList.toggle('open');};
+window.filterCourses=q=>{const n=q.toLowerCase().replace(/\s+/g,'');renderCourses(!n?COURSES:COURSES.filter(c=>c.name.toLowerCase().replace(/\s+/g,'').includes(n)));};
+let DC=null;
+window.openDrawer=(cid,tab)=>{
+  DC=COURSES.find(c=>c.id===cid);if(!DC)return;
+  const cRes=RESOURCES.filter(r=>r.course===DC.name||r.courseId===DC.id);
+  const types=[...new Set(cRes.map(r=>r.type).filter(Boolean))];
+  $('drwTitle').textContent=(DC.icon||'📚')+' '+DC.name;
+  $('dtabs').innerHTML=types.map(t=>`<button class="dtab${t===tab?' on':''}" onclick="switchDTab('${t}',this)">${t}</button>`).join('');
+  renderDrw(cRes,tab);$('ov').classList.add('on');$('drw').classList.add('on');
+};
+window.closeDrawer=()=>{$('ov').classList.remove('on');$('drw').classList.remove('on');};
+window.switchDTab=(tab,btn)=>{document.querySelectorAll('.dtab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderDrw(RESOURCES.filter(r=>r.course===DC.name||r.courseId===DC.id),tab);};
+function renderDrw(cRes,tab){
+  const items=cRes.filter(r=>r.type===tab);
+  $('drwBody').innerHTML=!items.length?'<div class="empty"><i class="fas fa-folder-open"></i><p>No '+tab+' uploaded yet</p></div>':
+    items.map(r=>`<div class="ri2" onclick="openViewer('${(r.title||'').replace(/'/g,"\\'")}','${r.driveLink||r.url||''}')"><div class="ri2-ico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div><div class="ri2-nm">${r.title||'Untitled'}</div><div class="ri2-sub">${r.description||DC.name}</div></div><button class="obtn">Open</button></div>`).join('');
+}
+function renderVideos(){
+  const el=$('videoList');
+  if(!VIDEOS.length){el.innerHTML='<div class="empty"><i class="fas fa-video"></i><p>No videos uploaded yet</p></div>';return;}
+  el.innerHTML=VIDEOS.map(v=>`<div class="vitem" onclick="openViewer('${(v.title||'').replace(/'/g,"\\'")}','${v.driveLink||v.url||''}')"><div class="vthumb">🎥</div><div class="vinfo"><div class="vnm">${v.title||'Untitled'}</div><div class="vcrs">${v.course||''} ${v.description?'· '+v.description:''}</div></div><div class="vplay"><i class="fas fa-play"></i></div></div>`).join('');
+}
+function renderRevisionMode(){
+  $('fcModeDesc').textContent=`${FLASHCARDS.length} card${FLASHCARDS.length!==1?'s':''} available`;
+  $('ppModeDesc').textContent=`${PAPERS.length} paper${PAPERS.length!==1?'s':''} available`;
+  $('vidModeDesc').textContent=`${VIDEOS.length} video${VIDEOS.length!==1?'s':''} available`;
+  const nc=RESOURCES.filter(r=>r.type==='notes'||r.type==='pdf').length;
+  $('notesModeDesc').textContent=`${nc} document${nc!==1?'s':''} available`;
+  $('fcProgress').style.width=FLASHCARDS.length>0?Math.min(100,Math.round((FLASHCARDS.length/20)*100))+'%':'0%';
+}
+let fcIdx=0,fcFlipped=false;
+function renderFlashcards(){
+  const el=$('fcArea');
+  if(!FLASHCARDS.length){el.innerHTML='<div class="empty"><i class="fas fa-layer-group"></i><p>No flashcards yet</p></div>';return;}
+  el.innerHTML=`<div class="fc-wrap"><div class="fc-inner" id="fcInner" onclick="flipCard()"><div class="fc-face fc-front"><div class="fc-q" id="fcQ">${FLASHCARDS[0].question||'Question'}</div><div class="fc-hint"><i class="fas fa-sync-alt"></i>&nbsp;Tap to flip</div></div><div class="fc-face fc-back"><div class="fc-a" id="fcA">${FLASHCARDS[0].answer||'Answer'}</div></div></div></div><div class="fc-meta" id="fcMeta">Card 1 of ${FLASHCARDS.length}</div><div class="fc-dots" id="fcDots"></div><div class="fc-btns" style="margin-top:12px"><button class="fcb fcb-n" onclick="nextCard(false)"><i class="fas fa-times"></i> Didn't Know</button><button class="fcb fcb-y" onclick="nextCard(true)"><i class="fas fa-check"></i> Got It!</button></div>`;
+  renderDots();
+}
+function renderDots(){const d=$('fcDots');if(!d)return;d.innerHTML=Array.from({length:Math.min(FLASHCARDS.length,8)},(_,i)=>`<div class="fcd${i===fcIdx%8?' on':''}"></div>`).join('');const m=$('fcMeta');if(m)m.textContent=`Card ${fcIdx+1} of ${FLASHCARDS.length}`;}
+window.flipCard=()=>{fcFlipped=!fcFlipped;const el=$('fcInner');if(el)el.classList.toggle('flipped',fcFlipped);};
+window.nextCard=knew=>{showToast(knew?'✅ Got it!':'📖 Keep practising!');fcIdx=(fcIdx+1)%FLASHCARDS.length;fcFlipped=false;const i=$('fcInner');if(i)i.classList.remove('flipped');const q=$('fcQ');if(q)q.textContent=FLASHCARDS[fcIdx].question||'';const a=$('fcA');if(a)a.textContent=FLASHCARDS[fcIdx].answer||'';renderDots();};
+let allYears=['All'];
+function renderPapers(f){
+  const el=$('pcards');
+  if(!PAPERS.length){el.innerHTML='<div class="empty"><i class="fas fa-scroll"></i><p>No past papers yet</p></div>';return;}
+  const years=[...new Set(PAPERS.map(p=>String(p.year)).filter(Boolean))].sort((a,b)=>b-a);
+  allYears=['All',...years];
+  $('yfilters').innerHTML=allYears.map((y,i)=>`<button class="yf${y===f?' on':''}" onclick="filterPapers('${y}',this)">${y}</button>`).join('');
+  const list=f==='All'?PAPERS:PAPERS.filter(p=>String(p.year)===f);
+  el.innerHTML=list.map(p=>`<div class="pcard"><div class="pc-top"><div class="pc-yr">${p.year||'—'}</div><div class="pc-cr">${p.course||''}</div></div><div class="pc-t">${p.title||'Past Paper'}</div><div class="pc-m">${p.duration||''} ${p.marks?'· '+p.marks:''}</div><div class="pc-acts">${p.paperLink?`<button class="pab pa1" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")}','${p.paperLink}')">📄 Paper</button>`:''}${p.schemeLink?`<button class="pab pa2" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")} — Scheme','${p.schemeLink}')">✅ Scheme</button>`:''}${p.modelLink?`<button class="pab pa3" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")} — Answers','${p.modelLink}')">💡 Answers</button>`:''}${!p.paperLink&&!p.schemeLink&&!p.modelLink?'<span style="font-size:.72rem;color:var(--text3)">Links coming soon</span>':''}</div></div>`).join('');
+}
+window.filterPapers=(f,btn)=>{document.querySelectorAll('.yf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderPapers(f);};
+window.goPage=tab=>{
+  if((tab==='courses'||tab==='revision'||tab==='papers')&&!IS_SUBSCRIBED){openSubModal();return;}
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.getElementById('pg-'+tab).classList.add('on');document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));const nt=document.getElementById('nt-'+tab);if(nt)nt.classList.add('on');$('appBody').scrollTop=0;
+};
+window.showToast=function(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);};
+setTimeout(()=>$('splash').classList.add('off'),4000);
 </script>
-
 </body>
 </html>
