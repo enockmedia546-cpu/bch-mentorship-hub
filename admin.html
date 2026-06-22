@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BCh Mentorship — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{
+  --ink:#0b1622;--ink2:#1a2e45;--ink3:#243d57;
+  --sky:#1a6fa8;--sky2:#155886;--sky3:rgba(26,111,168,.1);
+  --gold:#c9a227;--gold2:rgba(201,162,39,.14);
+  --fog:#f2f6fb;--fog2:#e8eef7;--fog3:#dde5f0;
+  --white:#fff;--text:#0b1622;--text2:#3a5068;--text3:#7a93ab;
+  --red:#e05454;--red2:rgba(224,84,84,.1);
+  --green:#1a9e6e;--green2:rgba(26,158,110,.1);
+  --purple:#7c3aed;--purple2:rgba(124,58,237,.1);
+  --orange:#e07a2a;--orange2:rgba(224,122,42,.1);
+  --sb:264px;--top:62px;
+  --r:14px;--r2:10px;--r3:100px;
+  --sh:0 2px 16px rgba(11,22,34,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);color:var(--text);-webkit-font-smoothing:antialiased}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sb);background:var(--ink);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:200;overflow-y:auto;flex-shrink:0;transition:transform .3s}
+.sb-logo{padding:1.3rem 1.4rem;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 2px 12px rgba(26,111,168,.35)}
+.sb-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:#fff;line-height:1.2}
+.sb-name span{color:var(--gold)}
+.sb-badge{font-size:.57rem;background:rgba(201,162,39,.2);color:var(--gold);padding:.15rem .55rem;border-radius:4px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;display:inline-block}
+.sb-nav{flex:1;padding:.8rem 0;overflow-y:auto}
+.sb-nav::-webkit-scrollbar{width:3px}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.sb-group{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:.7rem 1.4rem .35rem}
+.sb-btn{display:flex;align-items:center;gap:.8rem;padding:.7rem 1.4rem;color:rgba(255,255,255,.48);border:none;background:transparent;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.86rem;cursor:pointer;transition:all .18s;width:100%;text-align:left;position:relative}
+.sb-btn i{font-size:.9rem;width:17px;text-align:center;flex-shrink:0}
+.sb-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+.sb-btn.on{color:#fff;background:rgba(26,111,168,.22);font-weight:600}
+.sb-btn.on::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--sky);border-radius:0 3px 3px 0}
+.sb-cnt{margin-left:auto;background:rgba(26,111,168,.28);color:#7ec8f8;font-size:.6rem;font-weight:700;padding:.14rem .5rem;border-radius:var(--r3);min-width:20px;text-align:center}
+.sb-cnt.red{background:rgba(224,84,84,.3);color:#ff9090}
+.sb-footer{padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:.75rem}
+.sb-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:#fff;flex-shrink:0}
+.sb-uname{font-weight:600;font-size:.82rem;color:#fff;line-height:1.25}
+.sb-urole{font-size:.64rem;color:var(--gold)}
+.main{margin-left:var(--sb);flex:1;display:flex;flex-direction:column;min-height:100vh;max-width:calc(100vw - var(--sb))}
+.topbar{height:var(--top);background:var(--white);border-bottom:1px solid var(--fog3);display:flex;align-items:center;padding:0 1.8rem;position:sticky;top:0;z-index:100;box-shadow:var(--sh);gap:1rem;flex-shrink:0}
+.tb-ham{display:none;background:none;border:none;font-size:1.3rem;color:var(--text);cursor:pointer;padding:.4rem;border-radius:8px}
+.tb-ham:hover{background:var(--fog)}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--text)}
+.tb-right{display:flex;align-items:center;gap:.7rem;margin-left:auto}
+.live-badge{font-size:.73rem;padding:.38rem .85rem;background:var(--green2);border:1px solid rgba(26,158,110,.2);border-radius:var(--r3);color:var(--green);font-weight:600;white-space:nowrap}
+.btn-exit{padding:.42rem 1rem;background:var(--red2);border:1.5px solid rgba(224,84,84,.2);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.78rem;color:var(--red);cursor:pointer;transition:all .2s}
+.btn-exit:hover{background:var(--red);color:#fff}
+.content{flex:1;padding:1.8rem;overflow-x:hidden}
+.sec{display:none}
+.sec.on{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pg-hdr{margin-bottom:1.6rem}
+.pg-hdr h1{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:700;color:var(--text);margin-bottom:.32rem}
+.pg-hdr p{font-size:.82rem;color:var(--text3);line-height:1.6}
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.8rem}
+.stat{background:var(--white);border-radius:var(--r);padding:1.2rem 1.3rem;border:1px solid var(--fog3);box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .18s;cursor:default}
+.stat:hover{transform:translateY(-2px)}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.stat-ico{font-size:1.4rem;margin-bottom:.5rem}
+.stat-n{font-weight:800;font-size:1.9rem;color:var(--text);line-height:1;margin-bottom:.25rem}
+.stat-l{font-size:.73rem;color:var(--text3);font-weight:500}
+/* TWO-COL */
+.two-col{display:grid;grid-template-columns:400px 1fr;gap:1.4rem;align-items:start}
+.form-card{background:var(--white);border-radius:var(--r);padding:1.6rem;border:1px solid var(--fog3);box-shadow:var(--sh);margin-bottom:1.2rem}
+.form-card:last-child{margin-bottom:0}
+.form-card h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:1px solid var(--fog3);display:flex;align-items:center;gap:.55rem}
+.list-card{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);box-shadow:var(--sh);overflow:hidden}
+.lc-hdr{padding:1rem 1.4rem;border-bottom:1px solid var(--fog3);display:flex;align-items:center;justify-content:space-between;background:var(--fog)}
+.lc-hdr h3{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.lc-body{max-height:680px;overflow-y:auto}
+.lc-body::-webkit-scrollbar{width:4px}
+.lc-body::-webkit-scrollbar-thumb{background:var(--fog3);border-radius:2px}
+/* FORMS */
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-weight:600;font-size:.72rem;color:var(--text2);margin-bottom:.38rem;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;padding:.72rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.87rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+.fg textarea{resize:vertical;min-height:78px;line-height:1.5}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--sky);background:var(--white);box-shadow:0 0 0 3px rgba(26,111,168,.08)}
+.sel-w{position:relative}
+.sel-w::after{content:'▾';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:.78rem}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.fg-hint{font-size:.7rem;color:var(--text3);margin-top:.28rem;line-height:1.45;display:flex;align-items:flex-start;gap:.3rem}
+.fg-hint i{color:var(--sky);flex-shrink:0;margin-top:1px}
+.req{color:var(--red);margin-left:1px}
+/* UPLOAD TOGGLE */
+.upload-toggle{display:flex;gap:.5rem;margin-bottom:.9rem;background:var(--fog);border-radius:var(--r2);padding:4px}
+.utog{flex:1;padding:.55rem;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text3);background:transparent;text-align:center}
+.utog.on{background:var(--white);color:var(--sky);box-shadow:var(--sh)}
+.upload-section{display:none}
+.upload-section.on{display:block}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.78rem 1.3rem;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;transition:all .2s;border:none}
+.btn:active{transform:scale(.97)}
+.btn-full{width:100%}
+.btn-ink{background:var(--ink);color:#fff;box-shadow:0 3px 14px rgba(11,22,34,.18)}
+.btn-ink:hover{background:var(--ink2)}
+.btn-sky{background:var(--sky);color:#fff;box-shadow:0 3px 14px rgba(26,111,168,.22)}
+.btn-sky:hover{background:var(--sky2)}
+.btn-gold{background:var(--gold);color:var(--ink);box-shadow:0 3px 14px rgba(201,162,39,.22)}
+.btn-gold:hover{background:#b8911f}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 3px 14px rgba(26,158,110,.22)}
+.btn-green:hover{background:#158055}
+.btn-purple{background:var(--purple);color:#fff;box-shadow:0 3px 14px rgba(124,58,237,.22)}
+.btn-purple:hover{background:#6d28d9}
+.btn-sm{padding:.28rem .7rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.7rem;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:.3rem}
+.btn-sm:active{transform:scale(.94)}
+.btn-del{background:var(--red2);color:var(--red)}
+.btn-del:hover{background:var(--red);color:#fff}
+.btn-edit{background:var(--sky3);color:var(--sky)}
+.btn-edit:hover{background:var(--sky);color:#fff}
+.btn-approve{background:var(--green2);color:var(--green);border:1px solid rgba(26,158,110,.25)}
+.btn-approve:hover{background:var(--green);color:#fff}
+.btn-reject{background:var(--red2);color:var(--red);border:1px solid rgba(224,84,84,.2)}
+.btn-reject:hover{background:var(--red);color:#fff}
+.btn-ban{background:var(--orange2);color:var(--orange)}
+.btn-ban:hover{background:var(--orange);color:#fff}
+.btn-unban{background:var(--green2);color:var(--green)}
+.btn-unban:hover{background:var(--green);color:#fff}
+.btn-refresh{padding:.5rem .9rem;border-radius:var(--r2);background:var(--green2);color:var(--green);border:1px solid rgba(26,158,110,.2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem}
+.btn-refresh:hover{background:var(--green);color:#fff}
+/* ALERTS */
+.alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:.9rem;display:none;line-height:1.5}
+.alert.ok{background:#f0faf5;border:1px solid rgba(26,158,110,.25);color:var(--green);display:block}
+.alert.err{background:#fff1f1;border:1px solid rgba(224,84,84,.2);color:var(--red);display:block}
+/* LIST ITEMS */
+.li-item{padding:.95rem 1.3rem;border-bottom:1px solid var(--fog3);display:flex;align-items:flex-start;gap:1rem;transition:background .15s}
+.li-item:last-child{border-bottom:none}
+.li-item:hover{background:var(--fog)}
+.li-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.li-body{flex:1;min-width:0}
+.li-title{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:2px}
+.li-sub{font-size:.72rem;color:var(--text3);line-height:1.6}
+.li-actions{display:flex;gap:.35rem;align-items:center;flex-shrink:0;flex-wrap:wrap}
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;padding:.9rem 1.3rem;border-bottom:1px solid var(--fog3);background:var(--fog)}
+.t-search{flex:1;min-width:160px;max-width:280px;padding:.62rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.84rem;background:var(--white);outline:none;transition:border-color .2s}
+.t-search:focus{border-color:var(--sky)}
+.t-sel{padding:.6rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.8rem;background:var(--white);outline:none;cursor:pointer;color:var(--text)}
+.t-count{font-size:.76rem;color:var(--text3);margin-left:auto;white-space:nowrap}
+/* TAG */
+.tag{display:inline-block;padding:.2rem .65rem;border-radius:var(--r3);font-size:.68rem;font-weight:700}
+.tag-ok{background:var(--green2);color:var(--green)}
+.tag-red{background:var(--red2);color:var(--red)}
+.tag-gold{background:var(--gold2);color:#8a6a10}
+.tag-sky{background:var(--sky3);color:var(--sky)}
+.tag-ban{background:var(--orange2);color:var(--orange)}
+.tag-pend{background:rgba(124,58,237,.12);color:var(--purple)}
+/* EMPTY */
+.empty{text-align:center;padding:2.5rem 1.5rem;color:var(--text3)}
+.empty i{font-size:2.2rem;display:block;margin-bottom:.7rem;opacity:.28}
+.empty p{font-size:.82rem;line-height:1.6}
+.loading-row{padding:1.8rem;text-align:center;color:var(--text3);font-size:.82rem}
+/* PENDING SUB CARD */
+.sub-card{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);margin-bottom:1rem;overflow:hidden;box-shadow:var(--sh);transition:all .2s}
+.sub-card:hover{box-shadow:0 4px 20px rgba(11,22,34,.12)}
+.sub-card-hdr{padding:1rem 1.3rem;background:linear-gradient(135deg,var(--ink),var(--ink2));display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.sub-card-name{font-weight:700;font-size:.92rem;color:#fff}
+.sub-card-uni{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px}
+.sub-card-body{padding:1.1rem 1.3rem}
+.sub-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1rem}
+.sub-info-item{background:var(--fog);border-radius:9px;padding:.65rem .8rem;border:1px solid var(--fog3)}
+.sub-info-label{font-size:.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.sub-info-val{font-size:.83rem;font-weight:700;color:var(--text)}
+.sub-courses{margin-bottom:1rem}
+.sub-courses-title{font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.45rem}
+.sub-courses-list{display:flex;flex-wrap:wrap;gap:.4rem}
+.sub-course-chip{padding:.25rem .75rem;background:var(--sky3);border:1px solid rgba(26,111,168,.2);border-radius:var(--r3);font-size:.72rem;font-weight:600;color:var(--sky)}
+.sub-txn{background:var(--gold2);border:1px solid rgba(201,162,39,.25);border-radius:var(--r2);padding:.7rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.sub-txn-label{font-size:.7rem;font-weight:700;color:#8a6a10;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.sub-txn-val{font-size:.9rem;font-weight:800;color:#6a4e10;font-family:monospace}
+.sub-note{font-size:.74rem;color:var(--text3);margin-bottom:1rem;padding:.6rem .8rem;background:var(--fog);border-radius:8px;line-height:1.55}
+.approve-form{border-top:1px solid var(--fog3);padding-top:1rem;display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap}
+.af-field{flex:1;min-width:160px}
+.af-field label{display:block;font-size:.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}
+.af-field input{width:100%;padding:.68rem .9rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.85rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s}
+.af-field input:focus{border-color:var(--green);background:var(--white)}
+/* SCHOOL BROWSE */
+.school-accordion{margin-bottom:.7rem;border:1px solid var(--fog3);border-radius:var(--r);overflow:hidden}
+.sa-hdr{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:var(--white);cursor:pointer;transition:background .15s;border:none;width:100%;text-align:left}
+.sa-hdr:hover{background:var(--fog)}
+.sa-ico{width:38px;height:38px;border-radius:10px;background:var(--sky3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.sa-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.sa-sub{font-size:.7rem;color:var(--text3);margin-top:1px}
+.sa-arr{margin-left:auto;color:var(--text3);font-size:.85rem;transition:transform .25s}
+.sa-hdr.open .sa-arr{transform:rotate(90deg)}
+.sa-body{display:none;border-top:1px solid var(--fog3)}
+.sa-body.on{display:block}
+.sa-prog{padding:.65rem 1rem .65rem 3.3rem;border-bottom:1px solid var(--fog3);font-size:.82rem;font-weight:500;color:var(--text2);display:flex;align-items:center;justify-content:space-between;background:var(--fog)}
+.sa-prog:last-child{border-bottom:none}
+.sa-prog:hover{background:var(--fog2)}
+/* USER MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px)}
+.modal-ov.on{display:flex}
+.modal{background:var(--white);border-radius:var(--r);width:100%;max-width:700px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto}
+.modal-hdr{background:var(--ink);padding:1.4rem 1.6rem;display:flex;align-items:center;justify-content:space-between}
+.modal-hdr h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.6rem}
+.modal-x{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:1.6rem}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.modal-section{margin-bottom:1.2rem}
+.modal-section-title{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.modal-field{margin-bottom:.8rem}
+.modal-field label{display:block;font-size:.7rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+.modal-field input,.modal-field select{width:100%;padding:.68rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s;appearance:none}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--sky);background:var(--white)}
+.msel-w{position:relative}
+.msel-w::after{content:'▾';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:.76rem}
+.perms-box{background:var(--fog);border-radius:var(--r2);padding:1rem;border:1px solid var(--fog3)}
+.perm-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--fog3)}
+.perm-row:last-child{border-bottom:none}
+.perm-label{font-size:.83rem;font-weight:500;color:var(--text)}
+.perm-sub{font-size:.68rem;color:var(--text3)}
+.toggle-sw{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-sw .slider{position:absolute;cursor:pointer;inset:0;background:var(--fog3);border-radius:12px;transition:.3s}
+.toggle-sw .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle-sw input:checked + .slider{background:var(--sky)}
+.toggle-sw input:checked + .slider::before{transform:translateX(18px)}
+.course-restrict{display:flex;flex-direction:column;gap:.4rem;max-height:150px;overflow-y:auto}
+.cr-item{display:flex;align-items:center;gap:.6rem;padding:.4rem .5rem;border-radius:8px;transition:background .15s}
+.cr-item:hover{background:var(--fog3)}
+.cr-item label{font-size:.81rem;color:var(--text);cursor:pointer;flex:1}
+.cr-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:pointer}
+.modal-footer{display:flex;gap:.75rem;padding:1.2rem 1.6rem;border-top:1px solid var(--fog3);background:var(--fog)}
+.user-avatar-big{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;flex-shrink:0;overflow:hidden}
+.user-avatar-big img{width:100%;height:100%;object-fit:cover}
+.fc-item{padding:1rem 1.3rem;border-bottom:1px solid var(--fog3)}
+.fc-item:last-child{border-bottom:none}
+.fc-item:hover{background:var(--fog)}
+.fc-q{font-weight:700;font-size:.84rem;color:var(--text);margin-bottom:5px}
+.fc-a{font-size:.78rem;color:var(--text2);line-height:1.55;padding:7px 9px;background:var(--fog);border-radius:8px;margin-bottom:7px}
+.fc-foot{display:flex;align-items:center;justify-content:space-between}
+.ann-item{padding:1rem 1.3rem;border-bottom:1px solid var(--fog3)}
+.ann-item:last-child{border-bottom:none}
+.ann-item:hover{background:var(--fog)}
+.ann-t{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:4px}
+.ann-b{font-size:.78rem;color:var(--text2);line-height:1.55;margin-bottom:7px}
+.ann-foot{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.ov-recent{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);box-shadow:var(--sh);overflow:hidden;margin-top:1.4rem}
+.ov-rec-hdr{padding:.9rem 1.3rem;border-bottom:1px solid var(--fog3);background:var(--fog2);font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.sb-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:none}
+.sb-ov.on{display:block}
+@media(max-width:1200px){.stat-row{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;max-width:100vw}.tb-ham{display:block}.stat-row{grid-template-columns:repeat(2,1fr)}.content{padding:1.2rem}.two-col{grid-template-columns:1fr}.fg-row{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.sub-info-grid{grid-template-columns:1fr 1fr}}
+.toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--ink);color:#fff;padding:.8rem 1.4rem;border-radius:13px;font-size:.82rem;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.22);z-index:999;transform:translateY(20px);opacity:0;transition:all .28s;pointer-events:none;max-width:320px}
+.toast.on{transform:translateY(0);opacity:1}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.3rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="sb-ov" id="sbOv" onclick="closeSb()"></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo"><div class="sb-mark">B</div><div><div class="sb-name">BCh <span>Mentorship</span></div><div class="sb-badge">Admin Panel</div></div></div>
+  <nav class="sb-nav">
+    <div class="sb-group">Dashboard</div>
+    <button class="sb-btn on" onclick="showSec('overview',this)"><i class="fas fa-chart-pie"></i>Overview<span class="sb-cnt" id="cnt-ov">—</span></button>
+    <div class="sb-group" style="margin-top:.4rem">⚠️ Subscriptions</div>
+    <button class="sb-btn" onclick="showSec('pending',this)"><i class="fas fa-clock"></i>Pending Approvals<span class="sb-cnt red" id="cnt-pend">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Institutions</div>
+    <button class="sb-btn" onclick="showSec('schools',this)"><i class="fas fa-university"></i>Schools &amp; Programs<span class="sb-cnt" id="cnt-sch">0</span></button>
+    <button class="sb-btn" onclick="showSec('courses',this)"><i class="fas fa-book-open"></i>Courses<span class="sb-cnt" id="cnt-c">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Content</div>
+    <button class="sb-btn" onclick="showSec('resources',this)"><i class="fas fa-folder-open"></i>Resources<span class="sb-cnt" id="cnt-r">0</span></button>
+    <button class="sb-btn" onclick="showSec('videos',this)"><i class="fas fa-video"></i>Videos<span class="sb-cnt" id="cnt-v">0</span></button>
+    <button class="sb-btn" onclick="showSec('pastpapers',this)"><i class="fas fa-scroll"></i>Past Papers<span class="sb-cnt" id="cnt-pp">0</span></button>
+    <button class="sb-btn" onclick="showSec('flashcards',this)"><i class="fas fa-layer-group"></i>Flashcards<span class="sb-cnt" id="cnt-fc">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Communication</div>
+    <button class="sb-btn" onclick="showSec('announcements',this)"><i class="fas fa-bullhorn"></i>Announcements<span class="sb-cnt" id="cnt-an">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Students</div>
+    <button class="sb-btn" onclick="showSec('users',this)"><i class="fas fa-users"></i>All Students<span class="sb-cnt" id="cnt-u">0</span></button>
+  </nav>
+  <div class="sb-footer"><div class="sb-user"><div class="sb-av">A</div><div><div class="sb-uname">Administrator</div><div class="sb-urole">Full Access Mode</div></div></div></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="tb-ham" onclick="openSb()"><i class="fas fa-bars"></i></button>
+    <div class="tb-title" id="topTitle">Overview</div>
+    <div class="tb-right">
+      <span class="live-badge"><i class="fas fa-circle" style="font-size:.45rem;margin-right:.3rem"></i>Firebase Live</span>
+      <button class="btn-exit" onclick="location.href='login.html'"><i class="fas fa-sign-out-alt"></i> Exit</button>
+    </div>
+  </header>
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="sec on" id="sec-overview">
+      <div class="pg-hdr"><h1>Platform Overview</h1><p>Live data from Firebase. All changes reflect instantly in the student dashboard.</p></div>
+      <div class="stat-row">
+        <div class="stat" style="cursor:pointer" onclick="showSec('pending',document.querySelector('[onclick*=pending]'))"><div class="stat-bar" style="background:var(--purple)"></div><div class="stat-ico">⏳</div><div class="stat-n" id="ov-pend" style="color:var(--purple)">—</div><div class="stat-l">Pending Subscriptions</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--sky)"></div><div class="stat-ico">🏛️</div><div class="stat-n" id="ov-sch">—</div><div class="stat-l">Schools</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-ico">📚</div><div class="stat-n" id="ov-c">—</div><div class="stat-l">Courses</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--green)"></div><div class="stat-ico">👥</div><div class="stat-n" id="ov-u">—</div><div class="stat-l">Students</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--red)"></div><div class="stat-ico">📁</div><div class="stat-n" id="ov-r">—</div><div class="stat-l">Resources</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--orange)"></div><div class="stat-ico">🎥</div><div class="stat-n" id="ov-v">—</div><div class="stat-l">Videos</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-ico">📝</div><div class="stat-n" id="ov-pp">—</div><div class="stat-l">Past Papers</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--sky)"></div><div class="stat-ico">🃏</div><div class="stat-n" id="ov-fc">—</div><div class="stat-l">Flashcards</div></div>
+      </div>
+      <div class="ov-recent">
+        <div class="ov-rec-hdr"><i class="fas fa-clock" style="color:var(--sky)"></i>Recently Uploaded Resources</div>
+        <div id="ov-rec-list"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- PENDING SUBSCRIPTIONS -->
+    <div class="sec" id="sec-pending">
+      <div class="pg-hdr">
+        <h1>Pending Subscriptions</h1>
+        <p>Students who have submitted subscription requests. Verify the transaction ID, set the due date, and approve or reject each request.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap">
+        <button class="btn-refresh" onclick="loadPending()"><i class="fas fa-sync"></i> Refresh</button>
+        <span class="t-count" id="pend-count" style="margin-left:0">Loading…</span>
+        <div style="margin-left:auto;display:flex;gap:.5rem">
+          <button class="btn-sm btn-edit" onclick="filterPend('pending',this)" style="padding:.45rem 1rem">⏳ Pending</button>
+          <button class="btn-sm btn-approve" onclick="filterPend('approved',this)" style="padding:.45rem 1rem">✅ Approved</button>
+          <button class="btn-sm btn-reject" onclick="filterPend('rejected',this)" style="padding:.45rem 1rem">❌ Rejected</button>
+          <button class="btn-sm btn-edit" onclick="filterPend('all',this)" style="padding:.45rem 1rem">All</button>
+        </div>
+      </div>
+      <div id="pendingList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading pending subscriptions…</div></div>
+    </div>
+
+    <!-- SCHOOLS & PROGRAMS -->
+    <div class="sec" id="sec-schools">
+      <div class="pg-hdr"><h1>Schools &amp; Programs</h1><p>Add universities and their programs. Programs here populate the sign-up page automatically.</p></div>
+      <div class="two-col">
+        <div>
+          <div class="form-card">
+            <h3><i class="fas fa-plus-circle" style="color:var(--sky)"></i> Add University</h3>
+            <div class="alert" id="schoolAlert"></div>
+            <div class="fg"><label>University Name <span class="req">*</span></label><input type="text" id="schName" placeholder="e.g. Copperbelt University"/></div>
+            <div class="fg-row">
+              <div class="fg"><label>Short Code</label><input type="text" id="schCode" placeholder="CBU"/></div>
+              <div class="fg"><label>Location</label><input type="text" id="schLocation" placeholder="Kitwe"/></div>
+            </div>
+            <button class="btn btn-sky btn-full" onclick="addSchool()"><i class="fas fa-plus"></i> Add University</button>
+          </div>
+          <div class="form-card">
+            <h3><i class="fas fa-graduation-cap" style="color:var(--purple)"></i> Add Program to University</h3>
+            <div class="alert" id="progAlert"></div>
+            <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="progSchool"><option value="">— Select —</option></select></div></div>
+            <div class="fg"><label>Program Name <span class="req">*</span></label><input type="text" id="progName" placeholder="e.g. BSc Biochemistry"/></div>
+            <button class="btn btn-purple btn-full" onclick="addProgram()"><i class="fas fa-plus"></i> Add Program</button>
+          </div>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-university" style="color:var(--sky)"></i> All Universities &amp; Programs</h3><button class="btn-refresh" onclick="loadSchools()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="schoolsList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURSES (per school/program) -->
+    <div class="sec" id="sec-courses">
+      <div class="pg-hdr"><h1>Manage Courses</h1><p>Courses are linked to a specific university and program. Students only see courses relevant to their school and program.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-plus-circle" style="color:var(--sky)"></i> Add Course</h3>
+          <div class="alert" id="courseAlert"></div>
+          <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="cSchool" onchange="loadProgramsForCourse()"><option value="">— Select —</option></select></div></div>
+          <div class="fg"><label>Program <span class="req">*</span></label><div class="sel-w"><select id="cProgram"><option value="">— Select university first —</option></select></div></div>
+          <div class="fg"><label>Course Name <span class="req">*</span></label><input type="text" id="cName" placeholder="e.g. Biochemistry I"/></div>
+          <div class="fg-row">
+            <div class="fg"><label>Course Code</label><input type="text" id="cCode" placeholder="BCH 301"/></div>
+            <div class="fg"><label>Icon (emoji)</label><input type="text" id="cIcon" placeholder="🧬" maxlength="4"/></div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="cDesc" placeholder="Brief course description…"></textarea></div>
+          <button class="btn btn-ink btn-full" onclick="addCourse()"><i class="fas fa-plus"></i> Add Course</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-list" style="color:var(--sky)"></i> All Courses</h3><button class="btn-refresh" onclick="loadCourses()"><i class="fas fa-sync"></i></button></div>
+          <div class="toolbar">
+            <select class="t-sel" id="courseFilterSchool" onchange="filterCoursesBySchool(this.value)" style="flex:1;max-width:200px"><option value="">All Universities</option></select>
+            <select class="t-sel" id="courseFilterProg" onchange="filterCoursesByProg(this.value)" style="flex:1;max-width:200px"><option value="">All Programs</option></select>
+            <span class="t-count" id="course-count">—</span>
+          </div>
+          <div class="lc-body" id="coursesList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="sec" id="sec-resources">
+      <div class="pg-hdr"><h1>Upload Resources</h1><p>Add notes, PDFs, slides, assignments via Google Drive link or direct device upload.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-upload" style="color:var(--sky)"></i> Add Resource</h3>
+          <div class="alert" id="resAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="rTitle" placeholder="e.g. Enzyme Kinetics Notes — Week 4"/></div>
+          <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="rSchool" onchange="loadProgramsForRes()"><option value="">— Select —</option></select></div></div>
+          <div class="fg"><label>Program <span class="req">*</span></label><div class="sel-w"><select id="rProgram" onchange="filterResCourseDropdown()"><option value="">— Select university first —</option></select></div></div>
+          <div class="fg"><label>Course <span class="req">*</span></label><div class="sel-w"><select id="rCourse"><option value="">— Select —</option></select></div></div>
+          <div class="fg"><label>Type <span class="req">*</span></label><div class="sel-w"><select id="rType"><option value="">— Select —</option><option value="notes">📄 Notes</option><option value="pdf">📕 PDF</option><option value="slides">🖥️ Slides</option><option value="tutorial">📋 Tutorial Sheet</option><option value="assignment">✏️ Assignment</option><option value="practical">🔬 Practical Guide</option><option value="revision">💡 Revision Questions</option><option value="quiz">🧩 Quiz</option><option value="other">📁 Other</option></select></div></div>
+          <div class="fg">
+            <label>Upload Method</label>
+            <div class="upload-toggle"><button class="utog on" id="togDrive" onclick="setUploadMethod('drive')"><i class="fab fa-google-drive"></i> Drive Link</button><button class="utog" id="togCloud" onclick="setUploadMethod('cloudinary')"><i class="fas fa-cloud-upload-alt"></i> Device Upload</button></div>
+            <div class="upload-section on" id="driveSection"><input type="url" id="rLink" placeholder="https://drive.google.com/file/d/…"/><div class="fg-hint"><i class="fas fa-info-circle"></i>Students preview it fullscreen in the app.</div></div>
+            <div class="upload-section" id="cloudSection">
+              <input type="file" id="rFile" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg" style="background:var(--white);cursor:pointer"/>
+              <div id="rProg" style="display:none;margin-top:.5rem"><div style="height:5px;background:var(--fog3);border-radius:3px;overflow:hidden"><div id="rProgBar" style="height:100%;background:var(--sky);width:0%;transition:width .3s;border-radius:3px"></div></div><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem" id="rProgTxt">Uploading…</div></div>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><input type="text" id="rDesc" placeholder="e.g. Week 4 — Covers Michaelis-Menten"/></div>
+          <button class="btn btn-sky btn-full" id="resBtn" onclick="addResource()"><i class="fas fa-cloud-upload-alt"></i> Upload Resource</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-folder-open" style="color:var(--sky)"></i> All Resources</h3><button class="btn-refresh" onclick="loadResources()"><i class="fas fa-sync"></i></button></div>
+          <div class="toolbar"><input class="t-search" placeholder="Search…" oninput="filterRes(this.value)"/><select class="t-sel" onchange="filterResByType(this.value)"><option value="">All types</option><option value="notes">Notes</option><option value="pdf">PDF</option><option value="slides">Slides</option><option value="tutorial">Tutorial</option><option value="assignment">Assignment</option><option value="practical">Practical</option></select><span class="t-count" id="res-count">—</span></div>
+          <div class="lc-body" id="resList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="sec" id="sec-videos">
+      <div class="pg-hdr"><h1>Video Lessons</h1><p>Add video lectures via Google Drive, YouTube, or direct device upload.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-video" style="color:var(--red)"></i> Add Video</h3>
+          <div class="alert" id="vidAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="vTitle" placeholder="e.g. Glycolysis — Full Lecture"/></div>
+          <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="vSchool" onchange="loadProgramsForVid()"><option value="">— Select —</option></select></div></div>
+          <div class="fg"><label>Program <span class="req">*</span></label><div class="sel-w"><select id="vProgram" onchange="filterVidCourseDropdown()"><option value="">— Select university first —</option></select></div></div>
+          <div class="fg"><label>Course</label><div class="sel-w"><select id="vCourse"><option value="">— Select —</option></select></div></div>
+          <div class="fg">
+            <label>Upload Method</label>
+            <div class="upload-toggle"><button class="utog on" id="togVDrive" onclick="setVidMethod('drive')"><i class="fab fa-google-drive"></i> Drive / YouTube</button><button class="utog" id="togVCloud" onclick="setVidMethod('cloudinary')"><i class="fas fa-cloud-upload-alt"></i> Device Upload</button></div>
+            <div class="upload-section on" id="vDriveSection"><input type="url" id="vLink" placeholder="https://drive.google.com/… or https://youtube.com/…"/></div>
+            <div class="upload-section" id="vCloudSection">
+              <input type="file" id="vFile" accept="video/*" style="background:var(--white);cursor:pointer"/>
+              <div id="vProg" style="display:none;margin-top:.5rem"><div style="height:5px;background:var(--fog3);border-radius:3px;overflow:hidden"><div id="vProgBar" style="height:100%;background:var(--red);width:0%;transition:width .3s;border-radius:3px"></div></div><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem" id="vProgTxt">Uploading…</div></div>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><input type="text" id="vDesc" placeholder="e.g. Week 3 Lecture — 47 mins"/></div>
+          <button class="btn btn-green btn-full" id="vidBtn" onclick="addVideo()"><i class="fas fa-plus-circle"></i> Add Video</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-video" style="color:var(--red)"></i> All Videos</h3><button class="btn-refresh" onclick="loadVideos()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="vidList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAST PAPERS -->
+    <div class="sec" id="sec-pastpapers">
+      <div class="pg-hdr"><h1>Past Papers</h1><p>Upload exam papers, marking schemes and model answers via Google Drive links.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-scroll" style="color:var(--gold)"></i> Add Past Paper</h3>
+          <div class="alert" id="ppAlert"></div>
+          <div class="fg"><label>Exam Title <span class="req">*</span></label><input type="text" id="ppTitle" placeholder="e.g. Biochemistry Final Examination 2024"/></div>
+          <div class="fg-row">
+            <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="ppSchool" onchange="loadProgramsForPaper()"><option value="">— Select —</option></select></div></div>
+            <div class="fg"><label>Program <span class="req">*</span></label><div class="sel-w"><select id="ppProgram" onchange="filterPaperCourseDropdown()"><option value="">— Select university first —</option></select></div></div>
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>Course <span class="req">*</span></label><div class="sel-w"><select id="ppCourse"><option value="">— Select —</option></select></div></div>
+            <div class="fg"><label>Year <span class="req">*</span></label><input type="number" id="ppYear" placeholder="2024" min="2000" max="2035"/></div>
+          </div>
+          <div class="fg-row">
+            <div class="fg"><label>Duration</label><input type="text" id="ppDuration" placeholder="3 Hours"/></div>
+            <div class="fg"><label>Total Marks</label><input type="text" id="ppMarks" placeholder="100 marks"/></div>
+          </div>
+          <div class="fg"><label>📄 Paper Drive Link</label><input type="url" id="ppPaper" placeholder="https://drive.google.com/…"/></div>
+          <div class="fg"><label>✅ Marking Scheme Link</label><input type="url" id="ppScheme" placeholder="https://drive.google.com/…"/></div>
+          <div class="fg"><label>💡 Model Answers Link</label><input type="url" id="ppModel" placeholder="https://drive.google.com/…"/></div>
+          <button class="btn btn-gold btn-full" onclick="addPaper()"><i class="fas fa-save"></i> Save Past Paper</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-scroll" style="color:var(--gold)"></i> All Past Papers</h3><button class="btn-refresh" onclick="loadPapers()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="ppList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div class="sec" id="sec-flashcards">
+      <div class="pg-hdr"><h1>Flashcards</h1><p>Add question-and-answer revision cards for the student Revision Center.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-layer-group" style="color:var(--purple)"></i> Add Flashcard</h3>
+          <div class="alert" id="fcAlert"></div>
+          <div class="fg"><label>University (optional)</label><div class="sel-w"><select id="fcSchool" onchange="loadProgramsForFc()"><option value="">— All —</option></select></div></div>
+          <div class="fg"><label>Program (optional)</label><div class="sel-w"><select id="fcProgram" onchange="filterFcCourseDropdown()"><option value="">— All —</option></select></div></div>
+          <div class="fg"><label>Course (optional)</label><div class="sel-w"><select id="fcCourse"><option value="">— All courses —</option></select></div></div>
+          <div class="fg"><label>Question <span class="req">*</span></label><textarea id="fcQ" placeholder="Type the question here…" style="min-height:95px"></textarea></div>
+          <div class="fg"><label>Answer <span class="req">*</span></label><textarea id="fcA" placeholder="Type the full answer here…" style="min-height:95px"></textarea></div>
+          <button class="btn btn-purple btn-full" onclick="addFlashcard()"><i class="fas fa-plus"></i> Add Flashcard</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-layer-group" style="color:var(--purple)"></i> All Flashcards</h3><button class="btn-refresh" onclick="loadFlashcards()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="fcList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="sec" id="sec-announcements">
+      <div class="pg-hdr"><h1>Announcements</h1><p>Post notices that appear on every student's home screen instantly.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-bullhorn" style="color:var(--sky)"></i> Post Announcement</h3>
+          <div class="alert" id="annAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="annTitle" placeholder="e.g. Exam Timetable — Semester 2 2025"/></div>
+          <div class="fg"><label>Message <span class="req">*</span></label><textarea id="annBody" placeholder="Write your announcement…" style="min-height:110px"></textarea></div>
+          <div class="fg-row">
+            <div class="fg"><label>Target</label><div class="sel-w"><select id="annTarget"><option>All Students</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div></div>
+            <div class="fg"><label>Priority</label><div class="sel-w"><select id="annPriority"><option>Normal</option><option>High</option><option>Urgent</option></select></div></div>
+          </div>
+          <button class="btn btn-sky btn-full" onclick="addAnnouncement()"><i class="fas fa-paper-plane"></i> Post Announcement</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-bullhorn" style="color:var(--sky)"></i> Posted</h3><button class="btn-refresh" onclick="loadAnnouncements()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="annList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="sec" id="sec-users">
+      <div class="pg-hdr"><h1>Student Management</h1><p>Click any student row to open full management panel — edit details, set due date, manage access and permissions.</p></div>
+      <div class="list-card">
+        <div class="toolbar">
+          <input class="t-search" placeholder="Search name, email, university, program…" oninput="filterUsers(this.value)"/>
+          <select class="t-sel" id="uniFilterSel" onchange="filterByUni(this.value)"><option value="">All Universities</option></select>
+          <select class="t-sel" onchange="filterByStatus(this.value)"><option value="">All Status</option><option value="active">Active</option><option value="banned">Suspended</option></select>
+          <button class="btn-refresh" onclick="loadUsers()"><i class="fas fa-sync"></i></button>
+          <span class="t-count" id="u-count">—</span>
+        </div>
+        <div id="usersList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading students…</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- USER MANAGEMENT MODAL -->
+<div class="modal-ov" id="userModal">
+  <div class="modal">
+    <div class="modal-hdr"><h3><i class="fas fa-user-cog"></i> Manage Student</h3><button class="modal-x" onclick="closeUserModal()"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;padding-bottom:1.2rem;border-bottom:1px solid var(--fog3)">
+        <div class="user-avatar-big" id="modalAvatar">?</div>
+        <div><div style="font-weight:700;font-size:1.05rem;color:var(--text)" id="modalUserName">—</div><div style="font-size:.78rem;color:var(--text3)" id="modalUserEmail">—</div><div style="margin-top:5px" id="modalStatusBadge"></div></div>
+      </div>
+      <div class="alert" id="modalAlert"></div>
+      <div class="modal-grid">
+        <div>
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-user" style="color:var(--sky)"></i> Personal Information</div>
+            <div class="modal-field"><label>Full Name</label><input type="text" id="mName"/></div>
+            <div class="modal-field"><label>Phone</label><input type="tel" id="mPhone" placeholder="+260 97x xxx xxx"/></div>
+            <div class="modal-field"><label>Student ID</label><input type="text" id="mSid"/></div>
+            <div class="modal-field"><label>Email</label><input type="email" id="mEmail" readonly style="opacity:.6;cursor:default"/></div>
+            <div class="modal-field"><label>Signed Up</label><input type="text" id="mSignupDate" readonly style="opacity:.6;cursor:default"/></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-graduation-cap" style="color:var(--purple)"></i> Academic</div>
+            <div class="modal-field"><label>University</label><div class="msel-w"><select id="mUni" onchange="loadModalProgs(this.value,'')"><option value="">—</option></select></div></div>
+            <div class="modal-field"><label>Program</label><div class="msel-w"><select id="mProgram"><option value="">—</option></select></div></div>
+            <div class="modal-field"><label>Year</label><div class="msel-w"><select id="mYear"><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div></div>
+            <div class="modal-field"><label>Access Due Date</label><input type="date" id="mDueDate"/><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem">Access expires on this date. Student returns to subscribe-only mode.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-shield-alt" style="color:var(--red)"></i> Permissions</div>
+            <div class="perms-box">
+              <div class="perm-row"><div><div class="perm-label">Can Log In</div><div class="perm-sub">Block access to the entire platform</div></div><label class="toggle-sw"><input type="checkbox" id="mCanLogin" checked/><span class="slider"></span></label></div>
+              <div class="perm-row"><div><div class="perm-label">Subscription Active</div><div class="perm-sub">Grants access to all course content</div></div><label class="toggle-sw"><input type="checkbox" id="mIsSubscribed"/><span class="slider"></span></label></div>
+              <div class="perm-row"><div><div class="perm-label">Access Resources</div><div class="perm-sub">Notes, PDFs, videos and slides</div></div><label class="toggle-sw"><input type="checkbox" id="mCanAccess" checked/><span class="slider"></span></label></div>
+              <div class="perm-row"><div><div class="perm-label">Access Past Papers</div><div class="perm-sub">Past exam papers section</div></div><label class="toggle-sw"><input type="checkbox" id="mCanPapers" checked/><span class="slider"></span></label></div>
+            </div>
+          </div>
+          <div class="modal-section" style="margin-top:1rem">
+            <div class="modal-section-title"><i class="fas fa-lock" style="color:var(--orange)"></i> Restrict Courses</div>
+            <div style="font-size:.74rem;color:var(--text3);margin-bottom:.6rem">Tick courses to <strong>block</strong> this student from accessing them.</div>
+            <div class="course-restrict" id="modalCourseRestrict"><div style="color:var(--text3);font-size:.76rem">Loading…</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ink" onclick="saveUserChanges()" style="flex:1"><i class="fas fa-save"></i> Save All Changes</button>
+      <button class="btn" id="modalBanBtn" onclick="toggleBanUser()" style="padding:.78rem 1.2rem"><i class="fas fa-ban"></i> <span id="modalBanLabel">Suspend</span></button>
+      <button class="btn btn-del" onclick="deleteUser()" style="padding:.78rem 1.2rem;background:var(--red2);color:var(--red)"><i class="fas fa-trash"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getFirestore, doc, addDoc, getDoc, updateDoc, getDocs, deleteDoc, arrayUnion, arrayRemove, collection, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const cfg={apiKey:"AIzaSyC1YH0tA8mO3qujnps8p5UbgMix91tO5-U",authDomain:"biochemistry-b4b77.firebaseapp.com",projectId:"biochemistry-b4b77",storageBucket:"biochemistry-b4b77.appspot.com",messagingSenderId:"886538300649",appId:"1:886538300649:web:d2bfde3c4e141a95085478",measurementId:"G-GTYWCZTJMW"};
+const CLOUD_NAME="dpm7avyrl", CLOUD_PRESET="Unplug";
+const fapp=initializeApp(cfg), db=getFirestore(fapp);
+const $=id=>document.getElementById(id);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const typeIcon={notes:'📄',pdf:'📕',slides:'🖥️',tutorial:'📋',assignment:'✏️',practical:'🔬',revision:'💡',quiz:'🧩',other:'📁'};
+const typeBg={notes:'rgba(26,111,168,.1)',pdf:'rgba(201,162,39,.12)',slides:'rgba(124,58,237,.1)',tutorial:'rgba(26,158,110,.1)',assignment:'rgba(224,84,84,.1)',other:'rgba(26,111,168,.1)'};
+let _schools=[],_courses=[],_coursesAll=[],_res=[],_resAll=[],_videos=[],_papers=[],_cards=[],_ann=[],_users=[],_usersAll=[],_pending=[],_pendAll=[];
+let _activeUser=null, _resMethod='drive', _vidMethod='drive';
+
+function toast(msg,ok=true){const t=$('toast');t.style.background=ok?'#0b1622':'#e05454';t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2800);}
+function setAlert(id,msg,type){const el=$(id);if(!el)return;el.textContent=msg;el.className='alert '+(type==='ok'?'ok':'err');}
+function clrAlert(id){const el=$(id);if(el)el.className='alert';}
+function setCnt(id,n){const el=$(id);if(el)el.textContent=n;}
+
+const secLabels={overview:'Overview',pending:'Pending Subscriptions',schools:'Schools & Programs',courses:'Courses',resources:'Resources',videos:'Videos',pastpapers:'Past Papers',flashcards:'Flashcards',announcements:'Announcements',users:'Students'};
+window.showSec=(name,btn)=>{
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+name).classList.add('on');
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  $('topTitle').textContent=secLabels[name]||name;
+  closeSb();
+};
+window.openSb=()=>{$('sidebar').classList.add('open');$('sbOv').classList.add('on');};
+window.closeSb=()=>{$('sidebar').classList.remove('open');$('sbOv').classList.remove('on');};
+
+window.setUploadMethod=m=>{_resMethod=m;$('togDrive').classList.toggle('on',m==='drive');$('togCloud').classList.toggle('on',m==='cloudinary');$('driveSection').classList.toggle('on',m==='drive');$('cloudSection').classList.toggle('on',m==='cloudinary');};
+window.setVidMethod=m=>{_vidMethod=m;$('togVDrive').classList.toggle('on',m==='drive');$('togVCloud').classList.toggle('on',m==='cloudinary');$('vDriveSection').classList.toggle('on',m==='drive');$('vCloudSection').classList.toggle('on',m==='cloudinary');};
+
+async function cloudinaryUpload(file,progBar,progWrap,progTxt,resType='auto'){
+  const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUD_PRESET);
+  progWrap.style.display='block';
+  return new Promise((res,rej)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*100);progBar.style.width=p+'%';progTxt.textContent='Uploading… '+p+'%';}};
+    xhr.onload=()=>{const d=JSON.parse(xhr.responseText);if(d.secure_url){progTxt.textContent='✅ Done!';res(d.secure_url);}else rej(new Error(d.error?.message||'Upload failed'));};
+    xhr.onerror=()=>rej(new Error('Network error'));
+    xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resType}/upload`);xhr.send(fd);
+  });
+}
+
+async function loadAll(){await Promise.all([loadPending(),loadSchools(),loadCourses(),loadResources(),loadVideos(),loadPapers(),loadFlashcards(),loadAnnouncements(),loadUsers()]);updateOv();}
+
+function updateOv(){
+  setCnt('cnt-ov',_schools.length+_courses.length+_res.length);
+  $('ov-pend').textContent=_pending.filter(p=>p.status==='pending').length;
+  $('ov-sch').textContent=_schools.length;$('ov-c').textContent=_courses.length;$('ov-u').textContent=_users.length;$('ov-r').textContent=_res.length;$('ov-v').textContent=_videos.length;$('ov-pp').textContent=_papers.length;$('ov-fc').textContent=_cards.length;
+  const el=$('ov-rec-list');
+  if(!_res.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=_res.slice(0,8).map(r=>`<div class="li-item"><div class="li-ico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.school||''} · ${r.program||''} · ${r.course||''} · ${r.type||''}</div></div><span class="tag tag-ok">Live</span></div>`).join('');
+}
+
+// ── PENDING SUBSCRIPTIONS ──
+window.loadPending=async()=>{
+  try{const s=await getDocs(query(collection(db,'subscriptions'),orderBy('submittedAt','desc')));_pending=s.docs.map(d=>({id:d.id,...d.data()}));_pendAll=[..._pending];}catch{_pending=[];_pendAll=[];}
+  const pendCount=_pending.filter(p=>p.status==='pending').length;
+  setCnt('cnt-pend',pendCount);
+  $('pend-count').textContent=`${_pending.length} total · ${pendCount} pending`;
+  renderPending(_pending.filter(p=>p.status==='pending'));
+};
+function renderPending(data){
+  const el=$('pendingList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-check-circle"></i><p>No items to show</p></div>';return;}
+  el.innerHTML=data.map(s=>{
+    const d=s.submittedAt?.toDate?s.submittedAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+    const statusTag=s.status==='approved'?'<span class="tag tag-ok">✅ Approved</span>':s.status==='rejected'?'<span class="tag tag-red">❌ Rejected</span>':'<span class="tag tag-pend">⏳ Pending</span>';
+    return `<div class="sub-card">
+      <div class="sub-card-hdr">
+        <div><div class="sub-card-name">${s.fullName||'—'} ${statusTag}</div><div class="sub-card-uni">${s.university||'—'} · ${s.program||'—'} · ${s.yearOfStudy||'—'}</div></div>
+        <div style="font-size:.68rem;color:rgba(255,255,255,.4)">${d}</div>
+      </div>
+      <div class="sub-card-body">
+        <div class="sub-info-grid">
+          <div class="sub-info-item"><div class="sub-info-label">Email</div><div class="sub-info-val" style="font-size:.78rem">${s.email||'—'}</div></div>
+          <div class="sub-info-item"><div class="sub-info-label">Phone</div><div class="sub-info-val" style="font-size:.78rem">${s.phone||'—'}</div></div>
+          <div class="sub-info-item"><div class="sub-info-label">Student ID</div><div class="sub-info-val" style="font-size:.78rem">${s.studentId||'—'}</div></div>
+        </div>
+        <div class="sub-courses">
+          <div class="sub-courses-title">Requested Courses</div>
+          <div class="sub-courses-list">${(s.requestedCourses||[]).map(c=>`<span class="sub-course-chip">${c}</span>`).join('')||'<span style="font-size:.76rem;color:var(--text3)">No courses specified</span>'}</div>
+        </div>
+        <div class="sub-txn"><div><div class="sub-txn-label">Transaction ID</div><div class="sub-txn-val">${s.transactionId||'—'}</div></div><div style="font-size:.72rem;color:#8a6a10;margin-left:auto">K30/course/month</div></div>
+        ${s.note?`<div class="sub-note"><strong>Note from student:</strong> ${s.note}</div>`:''}
+        ${s.status==='pending'?`
+        <div class="approve-form">
+          <div class="af-field"><label>Set Due Date <span style="color:var(--red)">*</span></label><input type="date" id="due-${s.id}" min="${new Date().toISOString().split('T')[0]}"/></div>
+          <button class="btn btn-approve" onclick="approveSubscription('${s.id}','${s.uid||''}')"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn btn-reject" onclick="rejectSubscription('${s.id}')"><i class="fas fa-times"></i> Reject</button>
+        </div>`:s.status==='approved'?`<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--green2);border-radius:9px;font-size:.78rem;font-weight:600;color:var(--green)"><i class="fas fa-check-circle"></i> Approved · Due: ${s.dueDate?new Date(s.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>`:
+        `<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--red2);border-radius:9px;font-size:.78rem;font-weight:600;color:var(--red)"><i class="fas fa-times-circle"></i> Rejected</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+window.filterPend=(f,btn)=>{
+  document.querySelectorAll('[onclick*=filterPend]').forEach(b=>b.style.fontWeight='500');
+  if(btn)btn.style.fontWeight='800';
+  if(f==='all')renderPending(_pendAll);
+  else renderPending(_pendAll.filter(p=>p.status===f));
+};
+window.approveSubscription=async(subId,uid)=>{
+  const dueInput=$('due-'+subId);
+  if(!dueInput||!dueInput.value){toast('Please set a due date before approving',false);return;}
+  const dueDate=dueInput.value;
+  try{
+    await updateDoc(doc(db,'subscriptions',subId),{status:'approved',dueDate,approvedAt:serverTimestamp()});
+    // Update user doc if uid exists
+    if(uid){
+      await updateDoc(doc(db,'users',uid),{isSubscribed:true,dueDate,subscriptionStatus:'approved',canLogin:true});
+    }
+    toast('✅ Subscription approved! Student now has access.');
+    await loadPending();updateOv();
+  }catch(e){toast('Error: '+e.message,false);}
+};
+window.rejectSubscription=async(subId)=>{
+  if(!confirm('Reject this subscription request?'))return;
+  try{
+    await updateDoc(doc(db,'subscriptions',subId),{status:'rejected',rejectedAt:serverTimestamp()});
+    toast('Subscription rejected.');await loadPending();
+  }catch(e){toast('Error: '+e.message,false);}
+};
+
+// ── SCHOOLS ──
+window.loadSchools=async()=>{
+  try{const s=await getDocs(query(collection(db,'schools'),orderBy('name')));_schools=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_schools=[];}
+  setCnt('cnt-sch',_schools.length);
+  const opts='<option value="">— Select —</option>'+_schools.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  ['progSchool','cSchool','rSchool','vSchool','ppSchool','fcSchool'].forEach(id=>{const el=$(id);if(el)el.innerHTML=opts;});
+  // User modal
+  const mu=$('mUni');if(mu)mu.innerHTML='<option value="">—</option>'+_schools.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  // User filter
+  const uf=$('uniFilterSel');if(uf)uf.innerHTML='<option value="">All Universities</option>'+_schools.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  // Course filter
+  const cf=$('courseFilterSchool');if(cf)cf.innerHTML='<option value="">All Universities</option>'+_schools.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  renderSchoolsList();
+};
+function renderSchoolsList(){
+  const el=$('schoolsList');
+  if(!_schools.length){el.innerHTML='<div class="empty"><i class="fas fa-university"></i><p>No universities added yet</p></div>';return;}
+  el.innerHTML=_schools.map(s=>`
+    <div class="school-accordion">
+      <button class="sa-hdr" onclick="toggleSA(this)">
+        <div class="sa-ico">🏛️</div>
+        <div><div class="sa-name">${s.name||'—'} ${s.code?`<span style="font-size:.65rem;color:var(--text3)">(${s.code})</span>`:''}</div><div class="sa-sub">${s.location||''} · ${(s.programs||[]).length} program${(s.programs||[]).length!==1?'s':''}</div></div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem">
+          <button class="btn-sm btn-del" onclick="event.stopPropagation();delItem('schools','${s.id}',loadSchools)"><i class="fas fa-trash"></i></button>
+          <i class="fas fa-chevron-right sa-arr"></i>
+        </div>
+      </button>
+      <div class="sa-body">
+        ${(s.programs||[]).length?
+          (s.programs||[]).map(p=>`<div class="sa-prog"><span>🎓 ${p}</span><button class="btn-sm btn-del" onclick="removeProgram('${s.id}','${p}')"><i class="fas fa-times"></i> Remove</button></div>`).join('')
+          :'<div class="sa-prog" style="color:var(--text3)">No programs added yet</div>'}
+      </div>
+    </div>`).join('');
+}
+window.toggleSA=btn=>{
+  const body=btn.nextElementSibling;
+  btn.classList.toggle('open');
+  body.classList.toggle('on');
+};
+window.addSchool=async()=>{
+  clrAlert('schoolAlert');const name=$('schName').value.trim();
+  if(!name){setAlert('schoolAlert','Name required','err');return;}
+  try{await addDoc(collection(db,'schools'),{name,code:$('schCode').value.trim(),location:$('schLocation').value.trim(),programs:[],createdAt:serverTimestamp()});setAlert('schoolAlert','✅ University added!','ok');['schName','schCode','schLocation'].forEach(id=>{const el=$(id);if(el)el.value='';});await loadSchools();toast('✅ University added!');}catch(e){setAlert('schoolAlert','Error: '+e.message,'err');}
+};
+window.addProgram=async()=>{
+  clrAlert('progAlert');const schId=$('progSchool').value,name=$('progName').value.trim();
+  if(!schId){setAlert('progAlert','Select a university','err');return;}
+  if(!name){setAlert('progAlert','Program name required','err');return;}
+  try{await updateDoc(doc(db,'schools',schId),{programs:arrayUnion(name)});setAlert('progAlert','✅ Program added!','ok');$('progName').value='';await loadSchools();toast('✅ Program added!');}catch(e){setAlert('progAlert','Error: '+e.message,'err');}
+};
+window.removeProgram=async(schId,prog)=>{if(!confirm('Remove "'+prog+'"?'))return;try{await updateDoc(doc(db,'schools',schId),{programs:arrayRemove(prog)});await loadSchools();toast('Program removed');}catch(e){toast('Error: '+e.message,false);}};
+
+// ── COURSES (per school/program) ──
+window.loadProgramsForCourse=()=>{
+  const schId=$('cSchool').value;const school=_schools.find(s=>s.id===schId);const progs=school?.programs||[];
+  const sel=$('cProgram');sel.innerHTML=progs.length?'<option value="">— Select program —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join(''):'<option value="">No programs</option>';
+  // filter course list by school
+  const cfp=$('courseFilterProg');if(cfp)cfp.innerHTML='<option value="">All Programs</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join('');
+};
+window.loadProgramsForRes=()=>{
+  const schId=$('rSchool').value;const school=_schools.find(s=>s.id===schId);const progs=school?.programs||[];
+  const sel=$('rProgram');sel.innerHTML='<option value="">— All programs —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join('');
+  // filter courses
+  const filtered=schId?_courses.filter(c=>c.schoolId===schId):_courses;
+  $('rCourse').innerHTML='<option value="">— Select course —</option>'+filtered.map(c=>`<option value="${c.name}">${c.icon||''} ${c.name}</option>`).join('');
+};
+window.loadCourses=async()=>{
+  try{const s=await getDocs(query(collection(db,'courses'),orderBy('name')));_courses=s.docs.map(d=>({id:d.id,...d.data()}));_coursesAll=[..._courses];}catch{_courses=[];_coursesAll=[];}
+  setCnt('cnt-c',_courses.length);
+  renderCoursesList(_courses);
+};
+
+// ── Cascading School → Program → Course filters for Resources, Videos, Past Papers, Flashcards ──
+function programsForSchoolId(schId){const school=_schools.find(s=>s.id===schId);return school?.programs||[];}
+function coursesForSchoolProgram(schId,prog){
+  const school=_schools.find(s=>s.id===schId);
+  if(!schId)return [];
+  return _courses.filter(c=>c.schoolId===schId&&(!prog||c.program===prog));
+}
+
+window.loadProgramsForRes=()=>{
+  const schId=$('rSchool').value;
+  const progs=programsForSchoolId(schId);
+  $('rProgram').innerHTML=progs.length?'<option value="">— Select program —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join(''):'<option value="">No programs for this university</option>';
+  $('rCourse').innerHTML='<option value="">— Select program first —</option>';
+};
+window.filterResCourseDropdown=()=>{
+  const schId=$('rSchool').value,prog=$('rProgram').value;
+  const filtered=coursesForSchoolProgram(schId,prog);
+  $('rCourse').innerHTML=filtered.length?'<option value="">— Select course —</option>'+filtered.map(c=>`<option value="${c.name}">${c.icon||''} ${c.name}</option>`).join(''):'<option value="">No courses for this program yet</option>';
+};
+
+window.loadProgramsForVid=()=>{
+  const schId=$('vSchool').value;
+  const progs=programsForSchoolId(schId);
+  $('vProgram').innerHTML=progs.length?'<option value="">— Select program —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join(''):'<option value="">No programs for this university</option>';
+  $('vCourse').innerHTML='<option value="">— Select program first —</option>';
+};
+window.filterVidCourseDropdown=()=>{
+  const schId=$('vSchool').value,prog=$('vProgram').value;
+  const filtered=coursesForSchoolProgram(schId,prog);
+  $('vCourse').innerHTML=filtered.length?'<option value="">— Select course —</option>'+filtered.map(c=>`<option value="${c.name}">${c.icon||''} ${c.name}</option>`).join(''):'<option value="">No courses for this program yet</option>';
+};
+
+window.loadProgramsForPaper=()=>{
+  const schId=$('ppSchool').value;
+  const progs=programsForSchoolId(schId);
+  $('ppProgram').innerHTML=progs.length?'<option value="">— Select program —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join(''):'<option value="">No programs for this university</option>';
+  $('ppCourse').innerHTML='<option value="">— Select program first —</option>';
+};
+window.filterPaperCourseDropdown=()=>{
+  const schId=$('ppSchool').value,prog=$('ppProgram').value;
+  const filtered=coursesForSchoolProgram(schId,prog);
+  $('ppCourse').innerHTML=filtered.length?'<option value="">— Select course —</option>'+filtered.map(c=>`<option value="${c.name}">${c.icon||''} ${c.name}</option>`).join(''):'<option value="">No courses for this program yet</option>';
+};
+
+window.loadProgramsForFc=()=>{
+  const schId=$('fcSchool').value;
+  const progs=programsForSchoolId(schId);
+  $('fcProgram').innerHTML='<option value="">— All —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join('');
+  $('fcCourse').innerHTML='<option value="">— All courses —</option>';
+};
+window.filterFcCourseDropdown=()=>{
+  const schId=$('fcSchool').value,prog=$('fcProgram').value;
+  if(!schId){$('fcCourse').innerHTML='<option value="">— All courses —</option>'+_courses.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');return;}
+  const filtered=coursesForSchoolProgram(schId,prog);
+  $('fcCourse').innerHTML='<option value="">— All courses —</option>'+filtered.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+};
+function renderCoursesList(data){
+  $('course-count').textContent=data.length+' course'+(data.length!==1?'s':'');
+  const el=$('coursesList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-book-open"></i><p>No courses added yet.<br>Select a university and program on the left.</p></div>';return;}
+  // group by school
+  const bySchool={};
+  data.forEach(c=>{const k=c.school||'Other';if(!bySchool[k])bySchool[k]={};const p=c.program||'General';if(!bySchool[k][p])bySchool[k][p]=[];bySchool[k][p].push(c);});
+  el.innerHTML=Object.entries(bySchool).map(([school,progs])=>`
+    <div style="border-bottom:2px solid var(--fog3)">
+      <div style="padding:.6rem 1.1rem;background:var(--ink);color:#fff;font-size:.78rem;font-weight:700">${school}</div>
+      ${Object.entries(progs).map(([prog,cs])=>`
+        <div>
+          <div style="padding:.5rem 1.1rem;background:var(--fog2);font-size:.73rem;font-weight:700;color:var(--text2);border-bottom:1px solid var(--fog3)">🎓 ${prog}</div>
+          ${cs.map(c=>`<div class="li-item"><div class="li-ico" style="background:var(--sky3);font-size:1.3rem">${c.icon||'📚'}</div><div class="li-body"><div class="li-title">${c.name}</div><div class="li-sub">${c.code||''} ${c.description?'· '+c.description:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('courses','${c.id}',loadCourses)"><i class="fas fa-trash"></i></button></div></div>`).join('')}
+        </div>`).join('')}
+    </div>`).join('');
+}
+window.filterCoursesBySchool=schId=>{
+  if(!schId){renderCoursesList(_coursesAll);$('courseFilterProg').innerHTML='<option value="">All Programs</option>';return;}
+  const school=_schools.find(s=>s.id===schId);
+  const filtered=_coursesAll.filter(c=>c.schoolId===schId||c.school===school?.name);
+  const progs=[...new Set(filtered.map(c=>c.program).filter(Boolean))];
+  $('courseFilterProg').innerHTML='<option value="">All Programs</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join('');
+  renderCoursesList(filtered);
+};
+window.filterCoursesByProg=prog=>{
+  if(!prog){renderCoursesList(_coursesAll);return;}
+  renderCoursesList(_coursesAll.filter(c=>c.program===prog));
+};
+window.addCourse=async()=>{
+  clrAlert('courseAlert');
+  const schId=$('cSchool').value,prog=$('cProgram').value,name=$('cName').value.trim();
+  if(!schId){setAlert('courseAlert','Select a university','err');return;}
+  if(!prog){setAlert('courseAlert','Select a program','err');return;}
+  if(!name){setAlert('courseAlert','Course name required','err');return;}
+  const school=_schools.find(s=>s.id===schId);
+  try{
+    await addDoc(collection(db,'courses'),{name,code:$('cCode').value.trim(),description:$('cDesc').value.trim(),icon:$('cIcon').value.trim()||'📚',schoolId:schId,school:school?.name||'',program:prog,createdAt:serverTimestamp()});
+    setAlert('courseAlert','✅ Course added!','ok');['cName','cCode','cDesc','cIcon'].forEach(id=>{const el=$(id);if(el)el.value='';});
+    await loadCourses();updateOv();toast('✅ Course added!');
+  }catch(e){setAlert('courseAlert','Error: '+e.message,'err');}
+};
+
+// ── RESOURCES ──
+window.loadResources=async()=>{
+  try{const s=await getDocs(query(collection(db,'resources'),orderBy('createdAt','desc')));_res=s.docs.map(d=>({id:d.id,...d.data()}));_resAll=[..._res];}catch{_res=[];_resAll=[];}
+  setCnt('cnt-r',_res.length);renderResList(_resAll);
+};
+function renderResList(data){
+  $('res-count').textContent=data.length+' item'+(data.length!==1?'s':'');
+  const el=$('resList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=data.map(r=>`<div class="li-item"><div class="li-ico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.school||''} ${r.program?'· '+r.program:''} · ${r.course||'—'} · ${r.type||'—'}</div></div><div class="li-actions">${r.driveLink?`<a href="${r.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-external-link-alt"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('resources','${r.id}',loadResources)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+}
+window.filterRes=q=>{const n=q.toLowerCase();renderResList(_resAll.filter(r=>(r.title||'').toLowerCase().includes(n)||(r.course||'').toLowerCase().includes(n)||(r.school||'').toLowerCase().includes(n)));};
+window.filterResByType=t=>{renderResList(!t?_resAll:_resAll.filter(r=>r.type===t));};
+window.addResource=async()=>{
+  clrAlert('resAlert');
+  const title=$('rTitle').value.trim(),course=$('rCourse').value,type=$('rType').value;
+  const schId=$('rSchool').value,prog=$('rProgram').value;
+  if(!schId){setAlert('resAlert','Select a university','err');return;}
+  if(!prog){setAlert('resAlert','Select a program','err');return;}
+  if(!title){setAlert('resAlert','Title required','err');return;}
+  if(!course){setAlert('resAlert','Select a course','err');return;}
+  if(!type){setAlert('resAlert','Select a type','err');return;}
+  let link='';
+  const btn=$('resBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+  const school=_schools.find(s=>s.id===schId);
+  try{
+    if(_resMethod==='drive'){link=$('rLink').value.trim();if(!link){setAlert('resAlert','Paste a Drive link','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';return;}}
+    else{const f=$('rFile').files[0];if(!f){setAlert('resAlert','Select a file','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';return;}link=await cloudinaryUpload(f,$('rProgBar'),$('rProg'),$('rProgTxt'),'raw');}
+    await addDoc(collection(db,'resources'),{title,course,type,driveLink:link,description:$('rDesc').value.trim(),schoolId:schId||'',school:school?.name||'',program:$('rProgram').value||'',createdAt:serverTimestamp()});
+    setAlert('resAlert','✅ Resource uploaded!','ok');
+    ['rTitle','rLink','rDesc'].forEach(id=>{const el=$(id);if(el)el.value='';});$('rCourse').innerHTML='<option value="">— Select program first —</option>';$('rType').value='';if($('rFile'))$('rFile').value='';$('rProg').style.display='none';
+    await loadResources();updateOv();toast('✅ Resource saved!');
+  }catch(e){setAlert('resAlert','Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';
+};
+
+// ── VIDEOS ──
+window.loadVideos=async()=>{
+  try{const s=await getDocs(query(collection(db,'videos'),orderBy('createdAt','desc')));_videos=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_videos=[];}
+  setCnt('cnt-v',_videos.length);
+  const el=$('vidList');
+  if(!_videos.length){el.innerHTML='<div class="empty"><i class="fas fa-video"></i><p>No videos added yet</p></div>';return;}
+  el.innerHTML=_videos.map(v=>`<div class="li-item"><div class="li-ico" style="background:rgba(224,84,84,.1);font-size:1.2rem">🎥</div><div class="li-body"><div class="li-title">${v.title||'Untitled'}</div><div class="li-sub">${v.course||'—'}${v.description?' · '+v.description:''}</div></div><div class="li-actions">${v.driveLink?`<a href="${v.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-play"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('videos','${v.id}',loadVideos)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addVideo=async()=>{
+  clrAlert('vidAlert');const title=$('vTitle').value.trim();
+  const schId=$('vSchool').value,prog=$('vProgram').value,course=$('vCourse').value;
+  if(!schId){setAlert('vidAlert','Select a university','err');return;}
+  if(!prog){setAlert('vidAlert','Select a program','err');return;}
+  if(!title){setAlert('vidAlert','Title required','err');return;}
+  let link='';const btn=$('vidBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+  const school=_schools.find(s=>s.id===schId);
+  try{
+    if(_vidMethod==='drive'){link=$('vLink').value.trim();if(!link){setAlert('vidAlert','Paste a link','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';return;}}
+    else{const f=$('vFile').files[0];if(!f){setAlert('vidAlert','Select a video file','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';return;}link=await cloudinaryUpload(f,$('vProgBar'),$('vProg'),$('vProgTxt'),'video');}
+    await addDoc(collection(db,'videos'),{title,course,driveLink:link,url:link,description:$('vDesc').value.trim(),type:'video',schoolId:schId,school:school?.name||'',program:prog,createdAt:serverTimestamp()});
+    setAlert('vidAlert','✅ Video added!','ok');['vTitle','vLink','vDesc'].forEach(id=>{const el=$(id);if(el)el.value='';});$('vCourse').innerHTML='<option value="">— Select program first —</option>';if($('vFile'))$('vFile').value='';$('vProg').style.display='none';
+    await loadVideos();updateOv();toast('✅ Video added!');
+  }catch(e){setAlert('vidAlert','Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';
+};
+
+// ── PAST PAPERS ──
+window.loadPapers=async()=>{
+  try{const s=await getDocs(query(collection(db,'pastpapers'),orderBy('year','desc')));_papers=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_papers=[];}
+  setCnt('cnt-pp',_papers.length);
+  const el=$('ppList');
+  if(!_papers.length){el.innerHTML='<div class="empty"><i class="fas fa-scroll"></i><p>No past papers yet</p></div>';return;}
+  el.innerHTML=_papers.map(p=>`<div class="li-item"><div class="li-ico" style="background:var(--gold2);font-size:1.1rem">📝</div><div class="li-body"><div class="li-title">${p.title||'Untitled'}</div><div class="li-sub">${p.course||'—'} · ${p.year||'—'} ${p.duration?'· '+p.duration:''} ${p.marks?'· '+p.marks:''}</div><div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">${p.paperLink?`<a href="${p.paperLink}" target="_blank" class="btn-sm btn-edit" style="font-size:.62rem">📄 Paper</a>`:''} ${p.schemeLink?`<a href="${p.schemeLink}" target="_blank" class="btn-sm" style="background:var(--gold2);color:#8a6a10;font-size:.62rem">✅ Scheme</a>`:''} ${p.modelLink?`<a href="${p.modelLink}" target="_blank" class="btn-sm" style="background:var(--green2);color:var(--green);font-size:.62rem">💡 Answers</a>`:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('pastpapers','${p.id}',loadPapers)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addPaper=async()=>{
+  clrAlert('ppAlert');
+  const title=$('ppTitle').value.trim(),course=$('ppCourse').value,year=$('ppYear').value;
+  const schId=$('ppSchool').value,prog=$('ppProgram').value;
+  if(!schId){setAlert('ppAlert','Select a university','err');return;}
+  if(!prog){setAlert('ppAlert','Select a program','err');return;}
+  if(!title||!course||!year){setAlert('ppAlert','Title, course and year required','err');return;}
+  const school=_schools.find(s=>s.id===schId);
+  try{await addDoc(collection(db,'pastpapers'),{title,course,year:parseInt(year),duration:$('ppDuration').value.trim(),marks:$('ppMarks').value.trim(),paperLink:$('ppPaper').value.trim(),schemeLink:$('ppScheme').value.trim(),modelLink:$('ppModel').value.trim(),schoolId:schId,school:school?.name||'',program:prog,createdAt:serverTimestamp()});setAlert('ppAlert','✅ Saved!','ok');['ppTitle','ppYear','ppDuration','ppMarks','ppPaper','ppScheme','ppModel'].forEach(id=>{const el=$(id);if(el)el.value='';});$('ppCourse').innerHTML='<option value="">— Select program first —</option>';await loadPapers();updateOv();toast('✅ Past paper saved!');}catch(e){setAlert('ppAlert','Error: '+e.message,'err');}
+};
+
+// ── FLASHCARDS ──
+window.loadFlashcards=async()=>{
+  try{const s=await getDocs(query(collection(db,'flashcards'),orderBy('createdAt','desc')));_cards=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_cards=[];}
+  setCnt('cnt-fc',_cards.length);
+  const el=$('fcList');
+  if(!_cards.length){el.innerHTML='<div class="empty"><i class="fas fa-layer-group"></i><p>No flashcards yet</p></div>';return;}
+  el.innerHTML=_cards.map((f,i)=>`<div class="fc-item"><div class="fc-q"><span style="color:var(--sky);font-size:.68rem;font-weight:700;margin-right:.35rem">Q${i+1}.</span>${f.question||'—'}</div><div class="fc-a">${f.answer||'—'}</div><div class="fc-foot"><span style="font-size:.68rem;color:var(--text3)">${f.course||'All courses'}</span><button class="btn-sm btn-del" onclick="delItem('flashcards','${f.id}',loadFlashcards)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addFlashcard=async()=>{
+  clrAlert('fcAlert');const q=$('fcQ').value.trim(),a=$('fcA').value.trim();if(!q||!a){setAlert('fcAlert','Question and answer required','err');return;}
+  const schId=$('fcSchool').value,prog=$('fcProgram').value,course=$('fcCourse').value;
+  const school=_schools.find(s=>s.id===schId);
+  try{await addDoc(collection(db,'flashcards'),{question:q,answer:a,course,schoolId:schId||'',school:school?.name||'',program:prog||'',createdAt:serverTimestamp()});setAlert('fcAlert','✅ Added!','ok');$('fcQ').value='';$('fcA').value='';$('fcCourse').innerHTML='<option value="">— All courses —</option>';await loadFlashcards();updateOv();toast('✅ Flashcard added!');}catch(e){setAlert('fcAlert','Error: '+e.message,'err');}
+};
+
+// ── ANNOUNCEMENTS ──
+window.loadAnnouncements=async()=>{
+  try{const s=await getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc')));_ann=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_ann=[];}
+  setCnt('cnt-an',_ann.length);
+  const el=$('annList');
+  if(!_ann.length){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No announcements yet</p></div>';return;}
+  const pc={High:'var(--gold)',Urgent:'var(--red)',Normal:'var(--sky)'};
+  el.innerHTML=_ann.map(a=>`<div class="ann-item"><div class="ann-t">${a.title||'—'}</div><div class="ann-b">${a.body||''}</div><div class="ann-foot"><div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap"><span class="tag tag-sky">${a.target||'All'}</span>${a.priority&&a.priority!=='Normal'?`<span class="tag" style="background:${pc[a.priority]||'var(--sky)'}22;color:${pc[a.priority]||'var(--sky)'}">${a.priority}</span>`:''}<span style="font-size:.66rem;color:var(--text3)">${a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</span></div><button class="btn-sm btn-del" onclick="delItem('announcements','${a.id}',loadAnnouncements)"><i class="fas fa-trash"></i> Delete</button></div></div>`).join('');
+};
+window.addAnnouncement=async()=>{
+  clrAlert('annAlert');const title=$('annTitle').value.trim(),body=$('annBody').value.trim();if(!title||!body){setAlert('annAlert','Title and message required','err');return;}
+  try{await addDoc(collection(db,'announcements'),{title,body,target:$('annTarget').value,priority:$('annPriority').value,createdAt:serverTimestamp()});setAlert('annAlert','✅ Posted!','ok');$('annTitle').value='';$('annBody').value='';await loadAnnouncements();updateOv();toast('✅ Announcement posted!');}catch(e){setAlert('annAlert','Error: '+e.message,'err');}
+};
+
+// ── USERS ──
+window.loadUsers=async()=>{
+  try{const s=await getDocs(collection(db,'users'));_users=s.docs.map(d=>({id:d.id,...d.data()}));_usersAll=[..._users];}catch{_users=[];_usersAll=[];}
+  setCnt('cnt-u',_users.length);$('u-count').textContent=_users.length+' student'+(_users.length!==1?'s':'');
+  renderUsers(_usersAll);
+};
+function renderUsers(data){
+  $('u-count').textContent=data.length+' student'+(data.length!==1?'s':'');
+  const el=$('usersList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-users"></i><p>No students registered yet</p></div>';return;}
+  el.innerHTML=data.map(u=>{
+    const banned=u.status==='banned'||u.canLogin===false;
+    const subscribed=u.isSubscribed===true;
+    const signupDate=u.createdAt?.toDate?u.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const dueDate=u.dueDate?new Date(u.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const isDue=u.dueDate&&new Date(u.dueDate)<new Date();
+    return `<div class="li-item" onclick="openUserModal('${u.id}')" style="cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.88rem;flex-shrink:0;overflow:hidden">${u.profilePhoto?`<img src="${u.profilePhoto}" style="width:100%;height:100%;object-fit:cover"/>`:ini(u.fullName)}</div>
+      <div class="li-body">
+        <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
+          <div class="li-title">${u.fullName||'—'}</div>
+          ${banned?'<span class="tag tag-ban">Suspended</span>':subscribed?'<span class="tag tag-ok">Subscribed</span>':'<span class="tag tag-pend">Unsubscribed</span>'}
+          ${isDue&&!banned?'<span class="tag tag-red">Expired</span>':''}
+        </div>
+        <div class="li-sub" style="line-height:1.75">
+          ${u.email||'—'} &nbsp;·&nbsp; ${u.phone||'—'}<br/>
+          ${u.university||'—'} &nbsp;·&nbsp; ${u.program||'—'} &nbsp;·&nbsp; ${u.yearOfStudy||'—'}<br/>
+          Signed up: <strong>${signupDate}</strong> &nbsp;·&nbsp; Due: <strong style="color:${isDue&&subscribed?'var(--red)':'var(--text)'}">${dueDate}</strong>
+        </div>
+      </div>
+      <div class="li-actions" onclick="event.stopPropagation()">
+        <button class="btn-sm btn-edit" onclick="openUserModal('${u.id}')"><i class="fas fa-user-cog"></i> Manage</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+window.filterUsers=q=>{const n=q.toLowerCase();renderUsers(_usersAll.filter(u=>(u.fullName||'').toLowerCase().includes(n)||(u.email||'').toLowerCase().includes(n)||(u.university||'').toLowerCase().includes(n)||(u.program||'').toLowerCase().includes(n)));};
+window.filterByUni=uni=>{renderUsers(!uni?_usersAll:_usersAll.filter(u=>u.university===uni));};
+window.filterByStatus=st=>{if(!st){renderUsers(_usersAll);return;}if(st==='banned')renderUsers(_usersAll.filter(u=>u.status==='banned'||u.canLogin===false));else renderUsers(_usersAll.filter(u=>u.status!=='banned'&&u.canLogin!==false));};
+
+// ── USER MODAL ──
+window.loadModalProgs=function(uniName,selectedProg){
+  const school=_schools.find(s=>s.name===uniName);const progs=school?.programs||[];
+  $('mProgram').innerHTML=progs.length?progs.map(p=>`<option value="${p}" ${selectedProg===p?'selected':''}>${p}</option>`).join(''):'<option value="">No programs</option>';
+};
+window.openUserModal=async(uid)=>{
+  _activeUser=_usersAll.find(u=>u.id===uid);if(!_activeUser)return;
+  const u=_activeUser;const banned=u.status==='banned'||u.canLogin===false;
+  const av=$('modalAvatar');
+  if(u.profilePhoto){av.innerHTML=`<img src="${u.profilePhoto}" style="width:100%;height:100%;object-fit:cover"/>`;}else{av.textContent=ini(u.fullName);}
+  $('modalUserName').textContent=u.fullName||'—';$('modalUserEmail').textContent=u.email||'—';
+  $('modalStatusBadge').innerHTML=banned?'<span class="tag tag-ban">Suspended</span>':u.isSubscribed?'<span class="tag tag-ok">Subscribed</span>':'<span class="tag tag-pend">Unsubscribed</span>';
+  $('mName').value=u.fullName||'';$('mPhone').value=u.phone||'';$('mSid').value=u.studentId||'';$('mEmail').value=u.email||'';
+  $('mSignupDate').value=u.createdAt?.toDate?u.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  $('mDueDate').value=u.dueDate?new Date(u.dueDate).toISOString().split('T')[0]:'';
+  $('mYear').value=u.yearOfStudy||'First Year';
+  $('mCanLogin').checked=u.canLogin!==false;
+  $('mIsSubscribed').checked=u.isSubscribed===true;
+  $('mCanAccess').checked=u.canAccess!==false;
+  $('mCanPapers').checked=u.canPapers!==false;
+  $('modalBanLabel').textContent=banned?'Unsuspend':'Suspend';
+  $('modalBanBtn').className=banned?'btn btn-unban':'btn btn-ban';
+  clrAlert('modalAlert');
+  const uniSel=$('mUni');uniSel.innerHTML='<option value="">—</option>'+_schools.map(s=>`<option value="${s.name}" ${u.university===s.name?'selected':''}>${s.name}</option>`).join('');
+  loadModalProgs(u.university,u.program);
+  const restricted=u.restrictedCourses||[];
+  $('modalCourseRestrict').innerHTML=_courses.length?_courses.map(c=>`<div class="cr-item"><input type="checkbox" id="cr-${c.id}" ${restricted.includes(c.id)||restricted.includes(c.name)?'checked':''}/><label for="cr-${c.id}">${c.icon||'📚'} ${c.name} <span style="color:var(--text3);font-size:.68rem">(${c.school||''})</span></label></div>`).join(''):'<div style="font-size:.76rem;color:var(--text3)">No courses added yet</div>';
+  $('userModal').classList.add('on');
+};
+window.closeUserModal=()=>$('userModal').classList.remove('on');
+window.saveUserChanges=async()=>{
+  if(!_activeUser)return;clrAlert('modalAlert');
+  const restricted=[];_courses.forEach(c=>{const cb=$(`cr-${c.id}`);if(cb&&cb.checked)restricted.push(c.id);});
+  const d={fullName:$('mName').value.trim(),phone:$('mPhone').value.trim(),studentId:$('mSid').value.trim(),university:$('mUni').value,program:$('mProgram').value,yearOfStudy:$('mYear').value,dueDate:$('mDueDate').value||'',canLogin:$('mCanLogin').checked,isSubscribed:$('mIsSubscribed').checked,canAccess:$('mCanAccess').checked,canPapers:$('mCanPapers').checked,restrictedCourses:restricted};
+  try{await updateDoc(doc(db,'users',_activeUser.id),d);Object.assign(_activeUser,d);const idx=_usersAll.findIndex(u=>u.id===_activeUser.id);if(idx>-1)Object.assign(_usersAll[idx],d);setAlert('modalAlert','✅ Student updated!','ok');renderUsers(_usersAll);toast('✅ Saved!');}catch(e){setAlert('modalAlert','Error: '+e.message,'err');}
+};
+window.toggleBanUser=async()=>{
+  if(!_activeUser)return;const banned=_activeUser.status==='banned'||_activeUser.canLogin===false;const ns=banned?'active':'banned';const nc=banned;
+  try{await updateDoc(doc(db,'users',_activeUser.id),{status:ns,canLogin:nc});_activeUser.status=ns;_activeUser.canLogin=nc;
+    $('modalBanLabel').textContent=nc?'Suspend':'Unsuspend';$('modalBanBtn').className=nc?'btn btn-ban':'btn btn-unban';
+    $('modalStatusBadge').innerHTML=nc?'<span class="tag tag-ok">Active</span>':'<span class="tag tag-ban">Suspended</span>';
+    $('mCanLogin').checked=nc;const idx=_usersAll.findIndex(u=>u.id===_activeUser.id);if(idx>-1){_usersAll[idx].status=ns;_usersAll[idx].canLogin=nc;}renderUsers(_usersAll);toast(nc?'✅ Unsuspended':'🚫 Suspended');}catch(e){toast('Error: '+e.message,false);}
+};
+window.deleteUser=async()=>{
+  if(!_activeUser||!confirm('Permanently delete this student?'))return;
+  try{await deleteDoc(doc(db,'users',_activeUser.id));_users=_users.filter(u=>u.id!==_activeUser.id);_usersAll=_usersAll.filter(u=>u.id!==_activeUser.id);closeUserModal();renderUsers(_usersAll);setCnt('cnt-u',_usersAll.length);toast('🗑️ Deleted');}catch(e){toast('Error: '+e.message,false);}
+};
+window.delItem=async(col,id,reload)=>{if(!confirm('Delete permanently?'))return;try{await deleteDoc(doc(db,col,id));toast('🗑️ Deleted');await reload();updateOv();}catch(e){toast('Error: '+e.message,false);}};
+loadAll();
+</script>
+</body>
+</html>
