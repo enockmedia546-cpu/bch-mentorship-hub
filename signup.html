@@ -1,80 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up | NS Mentorship</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Sign Up — BCh Mentorship</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-body { font-family: Arial, sans-serif; background:#f0f8ff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
-form { background:white; padding:30px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; gap:15px; width:300px; }
-input { padding:10px; border-radius:6px; border:1px solid #ccc; width:100%; }
-button { padding:10px; border:none; border-radius:6px; background:#0B3D91; color:white; cursor:pointer; font-weight:bold; }
-button:hover { background:#09417a; }
+:root{
+  --ink:#0b1622;--ink2:#1a2e45;--sky:#1a6fa8;--sky2:#155886;
+  --sky3:rgba(26,111,168,.1);--gold:#c9a227;--fog:#f2f6fb;
+  --fog3:#dde5f0;--white:#fff;--text:#0b1622;--text2:#3a5068;
+  --text3:#7a93ab;--red:#e05454;--green:#1a9e6e;
+  --r:14px;--r2:10px;--r3:100px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);color:var(--text);-webkit-font-smoothing:antialiased}
+.wrap{min-height:100dvh;display:flex;align-items:stretch}
+.left{width:42%;background:linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);display:flex;flex-direction:column;justify-content:center;padding:3rem;position:relative;overflow:hidden}
+.left::before{content:'';position:absolute;top:-80px;right:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,168,.22),transparent 70%)}
+.left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(201,162,39,.1),transparent 70%)}
+.left-inner{position:relative;z-index:2;max-width:360px}
+.logo{display:flex;align-items:center;gap:11px;margin-bottom:2.5rem;text-decoration:none}
+.logo-mark{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#fff;box-shadow:0 3px 16px rgba(26,111,168,.4)}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:#fff}
+.logo-name span{color:var(--gold)}
+.left h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;font-style:italic;color:#fff;margin-bottom:.8rem;line-height:1.2}
+.left p{font-size:.83rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:2rem}
+.benefits{display:flex;flex-direction:column;gap:.65rem}
+.benefit{display:flex;align-items:flex-start;gap:.8rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.8rem 1rem}
+.benefit-ico{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.benefit-text strong{display:block;font-size:.82rem;font-weight:700;color:#fff;margin-bottom:2px}
+.benefit-text span{font-size:.72rem;color:rgba(255,255,255,.45)}
+.right{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;overflow-y:auto}
+.form-box{width:100%;max-width:460px}
+.form-top{margin-bottom:1.6rem}
+.form-top h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
+.form-top p{font-size:.82rem;color:var(--text3)}
+.form-top p a{color:var(--sky);font-weight:600;text-decoration:none}
+.steps-bar{display:flex;gap:.5rem;margin-bottom:.5rem}
+.step-seg{flex:1;height:3.5px;border-radius:2px;background:var(--fog3);transition:background .3s}
+.step-seg.done{background:var(--sky)}
+.step-seg.active{background:var(--sky);opacity:.6}
+.step-lbl{font-size:.72rem;font-weight:600;color:var(--text3);margin-bottom:1.3rem}
+.step-pane{display:none}
+.step-pane.on{display:block}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-weight:600;font-size:.74rem;color:var(--text2);margin-bottom:.38rem;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select{width:100%;padding:.76rem 1rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.88rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{border-color:var(--sky);background:var(--white);box-shadow:0 0 0 3px rgba(26,111,168,.08)}
+.sel-w{position:relative}
+.sel-w::after{content:'▾';position:absolute;right:.9rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;border:none}
+.btn:active{transform:scale(.97)}
+.btn-ink{background:var(--ink);color:#fff;box-shadow:0 3px 14px rgba(11,22,34,.18)}
+.btn-ink:hover{background:var(--ink2)}
+.btn-outline{background:transparent;color:var(--text2);border:1.5px solid var(--fog3)}
+.btn-outline:hover{border-color:var(--sky);color:var(--sky)}
+.btn-row{display:flex;gap:.75rem;margin-top:.4rem}
+.alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:.9rem;display:none;line-height:1.5}
+.alert.err{background:#fff1f1;border:1px solid rgba(224,84,84,.2);color:var(--red);display:block}
+.alert.ok{background:#f0faf5;border:1px solid rgba(26,158,110,.25);color:var(--green);display:block}
+.terms{font-size:.74rem;color:var(--text3);text-align:center;margin-top:.9rem;line-height:1.6}
+.terms a{color:var(--sky);text-decoration:none;font-weight:600}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-opts{color:var(--text3);font-size:.82rem;padding:.6rem 1rem;background:var(--fog);border-radius:8px}
+@media(max-width:820px){.left{display:none}.right{padding:1.5rem}}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <div class="left">
+    <div class="left-inner">
+      <a href="login.html" class="logo"><div class="logo-mark">B</div><div class="logo-name">BCh <span>Mentorship</span></div></a>
+      <h2>Join Thousands of Zambian Students</h2>
+      <p>Create your free account and unlock a world of academic resources tailored to your university and program.</p>
+      <div class="benefits">
+        <div class="benefit"><div class="benefit-ico">📚</div><div class="benefit-text"><strong>Full Course Materials</strong><span>Notes, PDFs, slides & practicals</span></div></div>
+        <div class="benefit"><div class="benefit-ico">📝</div><div class="benefit-text"><strong>Past Papers & Schemes</strong><span>Years of exam papers with answers</span></div></div>
+        <div class="benefit"><div class="benefit-ico">🧠</div><div class="benefit-text"><strong>Revision Center</strong><span>Flashcards, timed tests & progress</span></div></div>
+        <div class="benefit"><div class="benefit-ico">🎥</div><div class="benefit-text"><strong>Video Lectures</strong><span>Watch recorded lessons anytime</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="form-box">
+      <div class="form-top"><h2>Create Account</h2><p>Already registered? <a href="login.html">Log in here</a></p></div>
+      <div class="steps-bar" id="stepsBar"><div class="step-seg active" id="seg0"></div><div class="step-seg" id="seg1"></div><div class="step-seg" id="seg2"></div></div>
+      <div class="step-lbl" id="stepLbl">Step 1 of 3 — Personal Details</div>
+      <div class="alert" id="alertBox"></div>
 
-<form id="signup-form">
-    <h2>Sign Up</h2>
-    <input type="text" id="name" placeholder="Full Name" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="text" id="whatsapp" placeholder="WhatsApp Number" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Sign Up</button>
-    <p style="text-align:center;margin-top:15px;">
-    Alreedy have an account? <a href="login.html">Login</a>
-  </p>
-</form>
+      <!-- STEP 1 -->
+      <div class="step-pane on" id="step1">
+        <div class="fg"><label>Full Name *</label><input type="text" id="fullName" placeholder="e.g. Chanda Mwansa"/></div>
+        <div class="fg"><label>Email Address *</label><input type="email" id="email" placeholder="you@email.com"/></div>
+        <div class="fg"><label>Phone Number</label><input type="tel" id="phone" placeholder="+260 97x xxx xxx"/></div>
+        <div class="fg-row">
+          <div class="fg"><label>Password *</label><input type="password" id="password" placeholder="Min 8 characters"/></div>
+          <div class="fg"><label>Confirm Password *</label><input type="password" id="confirmPw" placeholder="Repeat password"/></div>
+        </div>
+        <button class="btn btn-ink" onclick="goStep2()">Continue →</button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-pane" id="step2">
+        <div class="fg">
+          <label>University *</label>
+          <div class="sel-w"><select id="uniSelect" onchange="loadPrograms()"><option value="">— Select your university —</option></select></div>
+        </div>
+        <div class="fg">
+          <label>Program / Course of Study *</label>
+          <div class="sel-w"><select id="programSelect"><option value="">— Select university first —</option></select></div>
+        </div>
+        <div class="fg-row">
+          <div class="fg">
+            <label>Year of Study *</label>
+            <div class="sel-w"><select id="yearSelect"><option value="">— Select —</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div>
+          </div>
+          <div class="fg"><label>Student ID</label><input type="text" id="studentId" placeholder="e.g. 2024/BCH/001"/></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goStep(1)" style="flex:.4">← Back</button>
+          <button class="btn btn-ink" onclick="goStep3()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-pane" id="step3">
+        <div style="background:var(--fog);border-radius:13px;padding:1.2rem;margin-bottom:1rem;border:1px solid var(--fog3)">
+          <div style="font-weight:700;font-size:.88rem;margin-bottom:.6rem;color:var(--text)">📋 Review Your Details</div>
+          <div id="reviewBox" style="font-size:.8rem;color:var(--text2);line-height:1.9"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="goStep(2)" style="flex:.4">← Back</button>
+          <button class="btn btn-ink" id="submitBtn" onclick="doSignup()">Create My Account</button>
+        </div>
+        <p class="terms">By signing up you agree to BCh Mentorship's <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-const firebaseConfig = {
- apiKey: "AIzaSyC1YH0tA8mO3qujnps8p5UbgMix91tO5-U",
-  authDomain: "biochemistry-b4b77.firebaseapp.com",
-  projectId: "biochemistry-b4b77",
-  storageBucket: "biochemistry-b4b77.firebasestorage.app",
-  messagingSenderId: "886538300649",
-  appId: "1:886538300649:web:d2bfde3c4e141a95085478",
-  measurementId: "G-GTYWCZTJMW"  
+const cfg={apiKey:"AIzaSyC1YH0tA8mO3qujnps8p5UbgMix91tO5-U",authDomain:"biochemistry-b4b77.firebaseapp.com",projectId:"biochemistry-b4b77",storageBucket:"biochemistry-b4b77.appspot.com",messagingSenderId:"886538300649",appId:"1:886538300649:web:d2bfde3c4e141a95085478",measurementId:"G-GTYWCZTJMW"};
+const fapp=initializeApp(cfg),auth=getAuth(fapp),db=getFirestore(fapp);
+const $=id=>document.getElementById(id);
+let _schools=[];
+
+function alert_(msg,type='err'){const b=$('alertBox');b.textContent=msg;b.className='alert '+type;b.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function clrAlert(){$('alertBox').className='alert'}
+
+// Load schools from Firebase
+async function loadSchools(){
+  try{
+    const s=await getDocs(query(collection(db,'schools'),orderBy('name')));
+    _schools=s.docs.map(d=>({id:d.id,...d.data()}));
+    const sel=$('uniSelect');
+    sel.innerHTML='<option value="">— Select your university —</option>'+_schools.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    if(!_schools.length) sel.innerHTML='<option value="">No universities added yet</option>';
+  }catch(e){$('uniSelect').innerHTML='<option value="">Error loading universities</option>';}
+}
+loadSchools();
+
+window.loadPrograms=function(){
+  const uniId=$('uniSelect').value;
+  const sel=$('programSelect');
+  if(!uniId){sel.innerHTML='<option value="">— Select university first —</option>';return;}
+  const school=_schools.find(s=>s.id===uniId);
+  const progs=school?.programs||[];
+  sel.innerHTML=progs.length
+    ?'<option value="">— Select your program —</option>'+progs.map(p=>`<option value="${p}">${p}</option>`).join('')
+    :'<option value="">No programs added for this university yet</option>';
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+window.goStep2=function(){
+  clrAlert();
+  const fn=$('fullName').value.trim(),em=$('email').value.trim(),pw=$('password').value,cpw=$('confirmPw').value;
+  if(!fn){alert_('Please enter your full name');return;}
+  if(!em||!em.includes('@')){alert_('Please enter a valid email');return;}
+  if(pw.length<8){alert_('Password must be at least 8 characters');return;}
+  if(pw!==cpw){alert_('Passwords do not match');return;}
+  goStep(2);
+};
+window.goStep3=function(){
+  clrAlert();
+  const uni=$('uniSelect').options[$('uniSelect').selectedIndex]?.text;
+  const prog=$('programSelect').value;
+  const yr=$('yearSelect').value;
+  if(!$('uniSelect').value){alert_('Please select your university');return;}
+  if(!prog||prog.startsWith('No programs')){alert_('Please select your program');return;}
+  if(!yr){alert_('Please select your year of study');return;}
+  // fill review
+  $('reviewBox').innerHTML=`
+    <div><strong>Name:</strong> ${$('fullName').value.trim()}</div>
+    <div><strong>Email:</strong> ${$('email').value.trim()}</div>
+    <div><strong>Phone:</strong> ${$('phone').value.trim()||'—'}</div>
+    <div><strong>University:</strong> ${uni}</div>
+    <div><strong>Program:</strong> ${prog}</div>
+    <div><strong>Year:</strong> ${yr}</div>
+    <div><strong>Student ID:</strong> ${$('studentId').value.trim()||'—'}</div>`;
+  goStep(3);
+};
+window.goStep=function(n){
+  document.querySelectorAll('.step-pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('step'+n).classList.add('on');
+  clrAlert();
+  const labels={1:'Step 1 of 3 — Personal Details',2:'Step 2 of 3 — Academic Information',3:'Step 3 of 3 — Review & Submit'};
+  $('stepLbl').textContent=labels[n];
+  [0,1,2].forEach(i=>{
+    const seg=$('seg'+i);
+    seg.classList.remove('done','active');
+    if(i<n-1)seg.classList.add('done');
+    else if(i===n-1)seg.classList.add('active');
+  });
+};
 
-document.getElementById("signup-form").addEventListener("submit", async e=>{
-    e.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const whatsapp = document.getElementById("whatsapp").value.trim();
-    const password = document.getElementById("password").value;
-
-    try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", cred.user.uid), {
-            name,
-            email,
-            whatsapp,
-            disabled: true,      // ❌ Disabled by default
-            role: "user",
-            createdAt: new Date(),
-            trialEndDate: null
-        });
-
-        alert("Sign-up successful! Your account is pending approval. Please contact admin.");
-        await signOut(auth);   // Keep user logged out until approved
-        window.location.href = "login.html";
-
-    } catch(err){
-        alert("Error: " + err.message);
-    }
-});
+window.doSignup=async function(){
+  const btn=$('submitBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Creating account…';
+  clrAlert();
+  const uniId=$('uniSelect').value;
+  const uniName=$('uniSelect').options[$('uniSelect').selectedIndex]?.text;
+  const program=$('programSelect').value;
+  const year=$('yearSelect').value;
+  const fullName=$('fullName').value.trim();
+  const email=$('email').value.trim();
+  const phone=$('phone').value.trim();
+  const studentId=$('studentId').value.trim();
+  const password=$('password').value;
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,password);
+    await updateProfile(cred.user,{displayName:fullName});
+    const now=new Date();
+    // Default due date 1 year from now
+    const dueDate=new Date(now);dueDate.setFullYear(dueDate.getFullYear()+1);
+    await setDoc(doc(db,'users',cred.user.uid),{
+      uid:cred.user.uid,fullName,email,phone,studentId,
+      universityId:uniId,university:uniName,program,yearOfStudy:year,
+      role:'student',status:'active',
+      registeredCourses:[],
+      restrictedCourses:[],
+      profilePhoto:'',
+      createdAt:serverTimestamp(),
+      dueDate:dueDate.toISOString(),
+      canLogin:true,
+    });
+    alert_('Account created! Redirecting…','ok');
+    setTimeout(()=>{window.location.href='dashboard.html';},900);
+  }catch(e){
+    let msg='Signup failed. Try again.';
+    if(e.code==='auth/email-already-in-use')msg='This email is already registered.';
+    if(e.code==='auth/invalid-email')msg='Invalid email address.';
+    alert_(msg);
+    btn.disabled=false;btn.innerHTML='Create My Account';
+  }
+};
 </script>
-
 </body>
 </html>
