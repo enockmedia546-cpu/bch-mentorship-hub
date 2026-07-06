@@ -531,7 +531,7 @@ onAuthStateChanged(auth,async u=>{
   CU=u;
   const s=await getDoc(doc(db,'users',u.uid));
   PROF=s.exists()?s.data():{fullName:u.displayName||'Student',university:'—',program:'—',yearOfStudy:'—',studentId:'—',email:u.email,registeredCourses:[],profilePhoto:'',phone:''};
-  if(PROF.canLogin===false||PROF.status==='banned'){await signOut(auth);location.href='login.html';return;}
+  if(PROF.canLogin===false||PROF.status==='banned'){await signOut(auth);location.href='index.html';return;}
   checkSubscriptionStatus();
   fillUI(PROF);
   await loadAllData();
