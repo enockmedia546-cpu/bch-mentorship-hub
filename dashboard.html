@@ -30,8 +30,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
 .tb-r{display:flex;align-items:center;gap:9px}
 .tb-btn{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);cursor:pointer;font-size:.85rem;position:relative;transition:all .18s}
 .tb-btn:active{transform:scale(.92)}
-.tb-pip{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--ink);display:none}
-.tb-pip.on{display:block}
+.tb-notif-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:var(--red);border-radius:9px;border:2px solid var(--ink);display:none;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;padding:0 3px;line-height:1}
+.tb-notif-badge.on{display:flex}
 .tb-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--sky),var(--sky2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:#fff;cursor:pointer;transition:transform .18s;overflow:hidden;flex-shrink:0}
 .tb-av img{width:100%;height:100%;object-fit:cover}
 .tb-av:active{transform:scale(.92)}
@@ -293,6 +293,41 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
 .sd{width:7px;height:7px;border-radius:50%;background:var(--sky);animation:bop .6s ease infinite alternate}
 .sd:nth-child(2){animation-delay:.15s}.sd:nth-child(3){animation-delay:.3s}
 @keyframes bop{to{transform:translateY(-7px);opacity:.35}}
+/* NOTIFICATION DRAWER */
+.notif-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:350;display:none;backdrop-filter:blur(3px)}
+.notif-ov.on{display:block}
+.notif-drw{position:absolute;top:0;left:0;right:0;background:var(--white);z-index:360;transform:translateY(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:70vh;display:flex;flex-direction:column;border-radius:0 0 22px 22px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.notif-drw.on{transform:translateY(0)}
+.notif-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog3);background:var(--ink);border-radius:0 0 0 0}
+.notif-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.5rem}
+.notif-close{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.12);border:none;color:#fff;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.notif-body{flex:1;overflow-y:auto;padding:10px 16px 16px}
+.notif-item{padding:12px;background:var(--fog);border-radius:12px;margin-bottom:8px;border-left:3px solid var(--sky)}
+.notif-item.unread{background:var(--sky3);border-left-color:var(--sky)}
+.notif-t{font-weight:700;font-size:.84rem;color:var(--text);margin-bottom:3px}
+.notif-b{font-size:.74rem;color:var(--text2);line-height:1.5}
+.notif-meta{font-size:.62rem;color:var(--text3);margin-top:5px}
+.notif-empty{text-align:center;padding:2rem;color:var(--text3);font-size:.82rem}
+/* EDIT MODAL */
+.edit-ov{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.edit-ov.on{display:flex}
+.edit-modal{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-height:88vh;display:flex;flex-direction:column;animation:slideUpModal .3s cubic-bezier(.4,0,.2,1)}
+.edit-hdr{padding:14px 20px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog3)}
+.edit-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;font-weight:700;color:var(--text)}
+.edit-x{width:30px;height:30px;border-radius:8px;background:var(--fog);border:1px solid var(--fog3);color:var(--text2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.edit-body{flex:1;overflow-y:auto;padding:14px 20px 24px}
+.edit-fg{margin-bottom:.95rem}
+.edit-fg label{display:block;font-weight:600;font-size:.72rem;color:var(--text2);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em}
+.edit-fg input,.edit-fg select,.edit-fg textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--fog);color:var(--text);outline:none;transition:border-color .2s;appearance:none}
+.edit-fg textarea{resize:vertical;min-height:85px;line-height:1.5}
+.edit-fg input:focus,.edit-fg select:focus,.edit-fg textarea:focus{border-color:var(--sky);background:var(--white)}
+.edit-sel-w{position:relative}
+.edit-sel-w::after{content:'▾';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:.76rem}
+.edit-alert{padding:.65rem .9rem;border-radius:var(--r2);font-size:.78rem;font-weight:500;margin-bottom:.8rem;display:none}
+.edit-alert.err{background:#fff1f1;border:1px solid rgba(224,84,84,.2);color:var(--red);display:block}
+.edit-alert.ok{background:#f0faf5;border:1px solid rgba(26,158,110,.25);color:var(--green);display:block}
+.btn-edit-save{width:100%;padding:13px;background:var(--sky);border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(26,111,168,.25);transition:all .2s}
+.btn-edit-save:active{transform:scale(.97)}
 .toast{position:absolute;bottom:calc(var(--nav)+14px);left:14px;right:14px;background:var(--ink);border:1px solid var(--ink3);border-radius:13px;padding:11px 16px;font-size:.79rem;font-weight:600;color:#fff;text-align:center;z-index:400;transform:translateY(16px);opacity:0;transition:all .27s;pointer-events:none}
 .toast.on{transform:translateY(0);opacity:1}
 </style>
@@ -303,7 +338,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
   <header class="topbar">
     <div class="tb-logo"><div class="tb-mark">B</div><div class="tb-name">BCh <span>Mentorship</span></div></div>
     <div class="tb-r">
-      <div class="tb-btn" id="notifBtn" onclick="goPage('home')"><i class="fas fa-bell"></i><div class="tb-pip" id="notifPip"></div></div>
+      <div class="tb-btn" id="notifBtn" onclick="openNotifDrawer()" style="position:relative"><i class="fas fa-bell"></i><div class="tb-notif-badge" id="notifBadge"></div></div>
       <div class="tb-av" id="tbAv" onclick="goPage('profile')"><span id="tbAvInitials">?</span></div>
     </div>
   </header>
@@ -440,6 +475,28 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
   </div>
 
   <div class="toast" id="toastEl"></div>
+
+  <!-- NOTIFICATION DRAWER -->
+  <div class="notif-ov" id="notifOv" onclick="closeNotifDrawer()"></div>
+  <div class="notif-drw" id="notifDrw">
+    <div class="notif-hdr">
+      <div class="notif-title"><i class="fas fa-bell"></i> Notifications</div>
+      <button class="notif-close" onclick="closeNotifDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="notif-body" id="notifBody"></div>
+  </div>
+
+  <!-- EDIT MODAL (general purpose) -->
+  <div class="edit-ov" id="editOv" onclick="if(event.target===this)closeEditModal()">
+    <div class="edit-modal">
+      <div class="edit-hdr"><div class="edit-title" id="editTitle">Edit</div><button class="edit-x" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
+      <div class="edit-body">
+        <div class="edit-alert" id="editAlert"></div>
+        <div id="editFields"></div>
+        <button class="btn-edit-save" id="editSaveBtn" onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -454,8 +511,8 @@ let CU=null,PROF=null,IS_SUBSCRIBED=false,DAYS_LEFT=null;
 let COURSES=[],RESOURCES=[],PAPERS=[],FLASHCARDS=[],ANNOUNCEMENTS=[],VIDEOS=[],PROGRAM_COURSES=[];
 const $=id=>document.getElementById(id);
 const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const typeIcon={notes:'📄',pdf:'📕',slides:'🖥️',tutorial:'📋',assignment:'✏️',practical:'🔬',revision:'💡',quiz:'🧩',video:'🎥',other:'📁'};
-const typeBg={notes:'rgba(26,111,168,.1)',pdf:'rgba(201,162,39,.12)',slides:'rgba(124,58,237,.1)',tutorial:'rgba(26,158,110,.1)',assignment:'rgba(224,84,84,.1)',practical:'rgba(26,111,168,.1)',other:'rgba(26,111,168,.1)'};
+const typeIcon={term1:'📘',term2:'📗',term3:'📙',sessional:'📋',prof_alick:'⭐',reference:'📚',slides:'🖥️',assignment:'✏️',practical:'🔬',video:'🎥',other:'📁',notes:'📄',pdf:'📕'};
+const typeBg={term1:'rgba(26,111,168,.1)',term2:'rgba(26,158,110,.1)',term3:'rgba(201,162,39,.12)',sessional:'rgba(124,58,237,.1)',prof_alick:'rgba(201,162,39,.22)',reference:'rgba(11,22,34,.08)',slides:'rgba(124,58,237,.1)',assignment:'rgba(224,84,84,.1)',practical:'rgba(26,111,168,.1)',other:'rgba(26,111,168,.1)'};
 
 function gdrivePrev(url){
   if(!url)return '';
@@ -482,7 +539,22 @@ onAuthStateChanged(auth,async u=>{
   setTimeout(()=>$('splash').classList.add('off'),600);
 });
 
+const TRIAL_DAYS=5;
 function checkSubscriptionStatus(){
+  // Check 5-day free trial first
+  const trialStart=PROF.trialStart?.toDate?PROF.trialStart.toDate():PROF.trialStart?new Date(PROF.trialStart):null;
+  if(trialStart){
+    const trialMsLeft=(trialStart.getTime()+(TRIAL_DAYS*24*60*60*1000))-Date.now();
+    const trialDaysLeft=Math.ceil(trialMsLeft/(1000*60*60*24));
+    if(trialDaysLeft>0){
+      IS_SUBSCRIBED=true;// trial still active
+      DAYS_LEFT=trialDaysLeft;
+      PROF._onTrial=true;
+      PROF._trialDaysLeft=trialDaysLeft;
+      return;
+    }
+  }
+  PROF._onTrial=false;
   IS_SUBSCRIBED=PROF.isSubscribed===true;
   if(PROF.dueDate){
     const due=new Date(PROF.dueDate);const now=new Date();
@@ -522,6 +594,12 @@ function renderAdminButton(p){
 
 function renderCountdown(){
   const wrap=$('countdownWrap');
+  if(PROF._onTrial){
+    const d=PROF._trialDaysLeft;
+    const cls=d<=1?'expiring':'';
+    wrap.innerHTML=`<div class="countdown-card ${cls}"><div class="countdown-label">🎁 Free Trial Active</div><div class="countdown-num">${d}</div><div class="countdown-unit">${d===1?'day remaining':'days remaining'}</div><div class="countdown-date">Full access — no subscription needed yet</div></div>`;
+    return;
+  }
   if(!PROF.dueDate){wrap.innerHTML='';return;}
   const due=new Date(PROF.dueDate);
   const dateStr=due.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
@@ -565,7 +643,7 @@ function renderAccessGate(){
     <div class="lock-screen">
       <div class="lock-icon"><i class="fas fa-lock"></i></div>
       <div class="lock-title">Unlock Full Access</div>
-      <div class="lock-sub">Subscribe to your courses to access notes, videos, past papers and revision tools tailored to <strong>${prog}</strong> at <strong>${uni}</strong>.</div>
+      <div class="lock-sub">Your 5-day free trial has ended. Subscribe to your courses to continue accessing notes, videos, past papers and revision tools tailored to <strong>${prog}</strong> at <strong>${uni}</strong>.</div>
       ${statusHtml}
       <div class="price-pill"><i class="fas fa-tag"></i> K30 per course / month</div>
       <div class="lock-status-card">
@@ -679,7 +757,9 @@ async function loadAllData(){
   $('hsPapers').textContent=PAPERS.length;$('hsCards').textContent=FLASHCARDS.length;
   $('qcCourses').textContent=COURSES.length;$('qcVideos').textContent=VIDEOS.length;
   $('qcPapers').textContent=PAPERS.length;$('qcCards').textContent=FLASHCARDS.length;$('qcAnn').textContent=ANNOUNCEMENTS.length;
-  if(ANNOUNCEMENTS.length)$('notifPip').classList.add('on');
+  const unread=ANNOUNCEMENTS.length;
+  const badge=$('notifBadge');
+  if(unread>0){badge.textContent=unread>9?'9+':String(unread);badge.classList.add('on');}else{badge.classList.remove('on');badge.textContent='';}
   const cs=(PROF.registeredCourses&&PROF.registeredCourses.length)?PROF.registeredCourses:COURSES.slice(0,4).map(c=>c.name);
   $('echips').innerHTML=cs.map(c=>`<div class="ec">${c}</div>`).join('');
   renderAnnouncements();renderRecentResources();renderCourses(COURSES);renderVideos();renderRevisionMode();renderFlashcards();renderPapers('All');
@@ -764,6 +844,36 @@ window.goPage=tab=>{
 };
 window.showToast=function(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);};
 setTimeout(()=>$('splash').classList.add('off'),4000);
+
+// ── NOTIFICATION DRAWER ──
+window.openNotifDrawer=function(){
+  const body=$('notifBody');
+  if(!ANNOUNCEMENTS.length){body.innerHTML='<div class="notif-empty"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.6rem"></i>No notifications yet</div>';
+  }else{
+    body.innerHTML=ANNOUNCEMENTS.map((a,i)=>`<div class="notif-item unread"><div class="notif-t">${a.title||''}</div><div class="notif-b">${a.body||''}</div><div class="notif-meta">${a.target||'All Students'}${a.priority&&a.priority!=='Normal'?' · '+a.priority:''}</div></div>`).join('');
+  }
+  $('notifOv').classList.add('on');$('notifDrw').classList.add('on');
+};
+window.closeNotifDrawer=function(){
+  $('notifOv').classList.remove('on');$('notifDrw').classList.remove('on');
+  // Mark all as read — clear badge
+  const badge=$('notifBadge');badge.classList.remove('on');badge.textContent='';
+};
+
+// ── EDIT MODAL ──
+let _editContext=null;
+window.closeEditModal=function(){$('editOv').classList.remove('on');_editContext=null;};
+function openEditModal(title,fields,context){
+  $('editTitle').textContent=title;$('editAlert').className='edit-alert';
+  $('editFields').innerHTML=fields;_editContext=context;
+  $('editOv').classList.add('on');
+}
+window.saveEdit=async function(){
+  if(!_editContext)return;
+  const al=$('editAlert');al.className='edit-alert';
+  try{await _editContext.save();al.textContent='✅ Saved!';al.className='edit-alert ok';setTimeout(closeEditModal,900);showToast('✅ Updated!');}
+  catch(e){al.textContent='Error: '+e.message;al.className='edit-alert err';}
+};
 </script>
 </body>
 </html>
