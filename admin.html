@@ -403,7 +403,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
           <div class="fg"><label>University <span class="req">*</span></label><div class="sel-w"><select id="rSchool" onchange="loadProgramsForRes()"><option value="">— Select —</option></select></div></div>
           <div class="fg"><label>Program <span class="req">*</span></label><div class="sel-w"><select id="rProgram" onchange="filterResCourseDropdown()"><option value="">— Select university first —</option></select></div></div>
           <div class="fg"><label>Course <span class="req">*</span></label><div class="sel-w"><select id="rCourse"><option value="">— Select —</option></select></div></div>
-          <div class="fg"><label>Type <span class="req">*</span></label><div class="sel-w"><select id="rType"><option value="">— Select —</option><option value="notes">📄 Notes</option><option value="pdf">📕 PDF</option><option value="slides">🖥️ Slides</option><option value="tutorial">📋 Tutorial Sheet</option><option value="assignment">✏️ Assignment</option><option value="practical">🔬 Practical Guide</option><option value="revision">💡 Revision Questions</option><option value="quiz">🧩 Quiz</option><option value="other">📁 Other</option></select></div></div>
+          <div class="fg"><label>Type <span class="req">*</span></label><div class="sel-w"><select id="rType"><option value="">— Select —</option><option value="term1">📘 Term 1</option><option value="term2">📗 Term 2</option><option value="term3">📙 Term 3</option><option value="sessional">📋 Sessional</option><option value="prof_alick">⭐ Prof Alick A+ Series</option><option value="reference">📚 Reference Books</option><option value="slides">🖥️ Slides</option><option value="assignment">✏️ Assignment</option><option value="practical">🔬 Practical Guide</option><option value="other">📁 Other</option></select></div></div>
           <div class="fg">
             <label>Upload Method</label>
             <div class="upload-toggle"><button class="utog on" id="togDrive" onclick="setUploadMethod('drive')"><i class="fab fa-google-drive"></i> Drive Link</button><button class="utog" id="togCloud" onclick="setUploadMethod('cloudinary')"><i class="fas fa-cloud-upload-alt"></i> Device Upload</button></div>
@@ -418,7 +418,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--fog);col
         </div>
         <div class="list-card">
           <div class="lc-hdr"><h3><i class="fas fa-folder-open" style="color:var(--sky)"></i> All Resources</h3><button class="btn-refresh" onclick="loadResources()"><i class="fas fa-sync"></i></button></div>
-          <div class="toolbar"><input class="t-search" placeholder="Search…" oninput="filterRes(this.value)"/><select class="t-sel" onchange="filterResByType(this.value)"><option value="">All types</option><option value="notes">Notes</option><option value="pdf">PDF</option><option value="slides">Slides</option><option value="tutorial">Tutorial</option><option value="assignment">Assignment</option><option value="practical">Practical</option></select><span class="t-count" id="res-count">—</span></div>
+          <div class="toolbar"><input class="t-search" placeholder="Search…" oninput="filterRes(this.value)"/><select class="t-sel" onchange="filterResByType(this.value)"><option value="">All types</option><option value="term1">Term 1</option><option value="term2">Term 2</option><option value="term3">Term 3</option><option value="sessional">Sessional</option><option value="prof_alick">Prof Alick A+ Series</option><option value="reference">Reference Books</option><option value="slides">Slides</option><option value="assignment">Assignment</option><option value="practical">Practical</option></select><span class="t-count" id="res-count">—</span></div>
           <div class="lc-body" id="resList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
         </div>
       </div>
@@ -613,8 +613,8 @@ const CLOUD_NAME="dpm7avyrl", CLOUD_PRESET="Unplug";
 const fapp=initializeApp(cfg), db=getFirestore(fapp);
 const $=id=>document.getElementById(id);
 const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const typeIcon={notes:'📄',pdf:'📕',slides:'🖥️',tutorial:'📋',assignment:'✏️',practical:'🔬',revision:'💡',quiz:'🧩',other:'📁'};
-const typeBg={notes:'rgba(26,111,168,.1)',pdf:'rgba(201,162,39,.12)',slides:'rgba(124,58,237,.1)',tutorial:'rgba(26,158,110,.1)',assignment:'rgba(224,84,84,.1)',other:'rgba(26,111,168,.1)'};
+const typeIcon={term1:'📘',term2:'📗',term3:'📙',sessional:'📋',prof_alick:'⭐',reference:'📚',slides:'🖥️',assignment:'✏️',practical:'🔬',other:'📁',notes:'📄',pdf:'📕'};
+const typeBg={term1:'rgba(26,111,168,.1)',term2:'rgba(26,158,110,.1)',term3:'rgba(201,162,39,.12)',sessional:'rgba(124,58,237,.1)',prof_alick:'rgba(201,162,39,.22)',reference:'rgba(11,22,34,.08)',slides:'rgba(124,58,237,.1)',assignment:'rgba(224,84,84,.1)',practical:'rgba(26,111,168,.1)',other:'rgba(26,111,168,.1)'};
 let _schools=[],_courses=[],_coursesAll=[],_res=[],_resAll=[],_videos=[],_papers=[],_cards=[],_ann=[],_users=[],_usersAll=[],_pending=[],_pendAll=[];
 let _activeUser=null, _resMethod='drive', _vidMethod='drive';
 
@@ -872,7 +872,7 @@ function renderCoursesList(data){
       ${Object.entries(progs).map(([prog,cs])=>`
         <div>
           <div style="padding:.5rem 1.1rem;background:var(--fog2);font-size:.73rem;font-weight:700;color:var(--text2);border-bottom:1px solid var(--fog3)">🎓 ${prog}</div>
-          ${cs.map(c=>`<div class="li-item"><div class="li-ico" style="background:var(--sky3);font-size:1.3rem">${c.icon||'📚'}</div><div class="li-body"><div class="li-title">${c.name}</div><div class="li-sub">${c.code||''} ${c.description?'· '+c.description:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('courses','${c.id}',loadCourses)"><i class="fas fa-trash"></i></button></div></div>`).join('')}
+          ${cs.map(c=>`<div class="li-item"><div class="li-ico" style="background:var(--sky3);font-size:1.3rem">${c.icon||'📚'}</div><div class="li-body"><div class="li-title">${c.name}</div><div class="li-sub">${c.code||''} ${c.description?'· '+c.description:''}</div></div><div class="li-actions"><button class="btn-sm btn-edit" onclick="editCourse('${c.id}')"><i class="fas fa-pen"></i></button><button class="btn-sm btn-del" onclick="delItem('courses','${c.id}',loadCourses)"><i class="fas fa-trash"></i></button></div></div>`).join('')}
         </div>`).join('')}
     </div>`).join('');
 }
@@ -911,7 +911,7 @@ function renderResList(data){
   $('res-count').textContent=data.length+' item'+(data.length!==1?'s':'');
   const el=$('resList');
   if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
-  el.innerHTML=data.map(r=>`<div class="li-item"><div class="li-ico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.school||''} ${r.program?'· '+r.program:''} · ${r.course||'—'} · ${r.type||'—'}</div></div><div class="li-actions">${r.driveLink?`<a href="${r.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-external-link-alt"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('resources','${r.id}',loadResources)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+  el.innerHTML=data.map(r=>`<div class="li-item"><div class="li-ico" style="background:${typeBg[r.type]||typeBg.other}">${typeIcon[r.type]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.school||''} ${r.program?'· '+r.program:''} · ${r.course||'—'} · ${r.type||'—'}</div></div><div class="li-actions">${r.driveLink?`<a href="${r.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-external-link-alt"></i></a>`:''}<button class="btn-sm btn-edit" onclick="editResource('${r.id}')"><i class="fas fa-pen"></i></button><button class="btn-sm btn-del" onclick="delItem('resources','${r.id}',loadResources)"><i class="fas fa-trash"></i></button></div></div>`).join('');
 }
 window.filterRes=q=>{const n=q.toLowerCase();renderResList(_resAll.filter(r=>(r.title||'').toLowerCase().includes(n)||(r.course||'').toLowerCase().includes(n)||(r.school||'').toLowerCase().includes(n)));};
 window.filterResByType=t=>{renderResList(!t?_resAll:_resAll.filter(r=>r.type===t));};
@@ -944,7 +944,7 @@ window.loadVideos=async()=>{
   setCnt('cnt-v',_videos.length);
   const el=$('vidList');
   if(!_videos.length){el.innerHTML='<div class="empty"><i class="fas fa-video"></i><p>No videos added yet</p></div>';return;}
-  el.innerHTML=_videos.map(v=>`<div class="li-item"><div class="li-ico" style="background:rgba(224,84,84,.1);font-size:1.2rem">🎥</div><div class="li-body"><div class="li-title">${v.title||'Untitled'}</div><div class="li-sub">${v.course||'—'}${v.description?' · '+v.description:''}</div></div><div class="li-actions">${v.driveLink?`<a href="${v.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-play"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('videos','${v.id}',loadVideos)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+  el.innerHTML=_videos.map(v=>`<div class="li-item"><div class="li-ico" style="background:rgba(224,84,84,.1);font-size:1.2rem">🎥</div><div class="li-body"><div class="li-title">${v.title||'Untitled'}</div><div class="li-sub">${v.course||'—'}${v.description?' · '+v.description:''}</div></div><div class="li-actions">${v.driveLink?`<a href="${v.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-play"></i></a>`:''}<button class="btn-sm btn-edit" onclick="editVideo('${v.id}')"><i class="fas fa-pen"></i></button><button class="btn-sm btn-del" onclick="delItem('videos','${v.id}',loadVideos)"><i class="fas fa-trash"></i></button></div></div>`).join('');
 };
 window.addVideo=async()=>{
   clrAlert('vidAlert');const title=$('vTitle').value.trim();
@@ -970,7 +970,7 @@ window.loadPapers=async()=>{
   setCnt('cnt-pp',_papers.length);
   const el=$('ppList');
   if(!_papers.length){el.innerHTML='<div class="empty"><i class="fas fa-scroll"></i><p>No past papers yet</p></div>';return;}
-  el.innerHTML=_papers.map(p=>`<div class="li-item"><div class="li-ico" style="background:var(--gold2);font-size:1.1rem">📝</div><div class="li-body"><div class="li-title">${p.title||'Untitled'}</div><div class="li-sub">${p.course||'—'} · ${p.year||'—'} ${p.duration?'· '+p.duration:''} ${p.marks?'· '+p.marks:''}</div><div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">${p.paperLink?`<a href="${p.paperLink}" target="_blank" class="btn-sm btn-edit" style="font-size:.62rem">📄 Paper</a>`:''} ${p.schemeLink?`<a href="${p.schemeLink}" target="_blank" class="btn-sm" style="background:var(--gold2);color:#8a6a10;font-size:.62rem">✅ Scheme</a>`:''} ${p.modelLink?`<a href="${p.modelLink}" target="_blank" class="btn-sm" style="background:var(--green2);color:var(--green);font-size:.62rem">💡 Answers</a>`:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('pastpapers','${p.id}',loadPapers)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+  el.innerHTML=_papers.map(p=>`<div class="li-item"><div class="li-ico" style="background:var(--gold2);font-size:1.1rem">📝</div><div class="li-body"><div class="li-title">${p.title||'Untitled'}</div><div class="li-sub">${p.course||'—'} · ${p.year||'—'} ${p.duration?'· '+p.duration:''} ${p.marks?'· '+p.marks:''}</div><div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">${p.paperLink?`<a href="${p.paperLink}" target="_blank" class="btn-sm btn-edit" style="font-size:.62rem">📄 Paper</a>`:''} ${p.schemeLink?`<a href="${p.schemeLink}" target="_blank" class="btn-sm" style="background:var(--gold2);color:#8a6a10;font-size:.62rem">✅ Scheme</a>`:''} ${p.modelLink?`<a href="${p.modelLink}" target="_blank" class="btn-sm" style="background:var(--green2);color:var(--green);font-size:.62rem">💡 Answers</a>`:''}</div></div><div class="li-actions"><button class="btn-sm btn-edit" onclick="editPaper('${p.id}')"><i class="fas fa-pen"></i></button><button class="btn-sm btn-del" onclick="delItem('pastpapers','${p.id}',loadPapers)"><i class="fas fa-trash"></i></button></div></div>`).join('');
 };
 window.addPaper=async()=>{
   clrAlert('ppAlert');
@@ -989,7 +989,7 @@ window.loadFlashcards=async()=>{
   setCnt('cnt-fc',_cards.length);
   const el=$('fcList');
   if(!_cards.length){el.innerHTML='<div class="empty"><i class="fas fa-layer-group"></i><p>No flashcards yet</p></div>';return;}
-  el.innerHTML=_cards.map((f,i)=>`<div class="fc-item"><div class="fc-q"><span style="color:var(--sky);font-size:.68rem;font-weight:700;margin-right:.35rem">Q${i+1}.</span>${f.question||'—'}</div><div class="fc-a">${f.answer||'—'}</div><div class="fc-foot"><span style="font-size:.68rem;color:var(--text3)">${f.course||'All courses'}</span><button class="btn-sm btn-del" onclick="delItem('flashcards','${f.id}',loadFlashcards)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+  el.innerHTML=_cards.map((f,i)=>`<div class="fc-item"><div class="fc-q"><span style="color:var(--sky);font-size:.68rem;font-weight:700;margin-right:.35rem">Q${i+1}.</span>${f.question||'—'}</div><div class="fc-a">${f.answer||'—'}</div><div class="fc-foot"><span style="font-size:.68rem;color:var(--text3)">${f.course||'All courses'}</span><div style="display:flex;gap:.3rem"><button class="btn-sm btn-edit" onclick="editFlashcard('${f.id}')"><i class="fas fa-pen"></i></button><button class="btn-sm btn-del" onclick="delItem('flashcards','${f.id}',loadFlashcards)"><i class="fas fa-trash"></i></button></div></div></div>`).join('');
 };
 window.addFlashcard=async()=>{
   clrAlert('fcAlert');const q=$('fcQ').value.trim(),a=$('fcA').value.trim();if(!q||!a){setAlert('fcAlert','Question and answer required','err');return;}
@@ -1005,7 +1005,7 @@ window.loadAnnouncements=async()=>{
   const el=$('annList');
   if(!_ann.length){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No announcements yet</p></div>';return;}
   const pc={High:'var(--gold)',Urgent:'var(--red)',Normal:'var(--sky)'};
-  el.innerHTML=_ann.map(a=>`<div class="ann-item"><div class="ann-t">${a.title||'—'}</div><div class="ann-b">${a.body||''}</div><div class="ann-foot"><div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap"><span class="tag tag-sky">${a.target||'All'}</span>${a.priority&&a.priority!=='Normal'?`<span class="tag" style="background:${pc[a.priority]||'var(--sky)'}22;color:${pc[a.priority]||'var(--sky)'}">${a.priority}</span>`:''}<span style="font-size:.66rem;color:var(--text3)">${a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</span></div><button class="btn-sm btn-del" onclick="delItem('announcements','${a.id}',loadAnnouncements)"><i class="fas fa-trash"></i> Delete</button></div></div>`).join('');
+  el.innerHTML=_ann.map(a=>`<div class="ann-item"><div class="ann-t">${a.title||'—'}</div><div class="ann-b">${a.body||''}</div><div class="ann-foot"><div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap"><span class="tag tag-sky">${a.target||'All'}</span>${a.priority&&a.priority!=='Normal'?`<span class="tag" style="background:${pc[a.priority]||'var(--sky)'}22;color:${pc[a.priority]||'var(--sky)'}">${a.priority}</span>`:''}<span style="font-size:.66rem;color:var(--text3)">${a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</span></div><div style="display:flex;gap:.35rem"><button class="btn-sm btn-edit" onclick="editAnnouncement('${a.id}')"><i class="fas fa-pen"></i> Edit</button><button class="btn-sm btn-del" onclick="delItem('announcements','${a.id}',loadAnnouncements)"><i class="fas fa-trash"></i> Delete</button></div></div></div>`).join('');
 };
 window.addAnnouncement=async()=>{
   clrAlert('annAlert');const title=$('annTitle').value.trim(),body=$('annBody').value.trim();if(!title||!body){setAlert('annAlert','Title and message required','err');return;}
@@ -1100,6 +1100,155 @@ window.deleteUser=async()=>{
   try{await deleteDoc(doc(db,'users',_activeUser.id));_users=_users.filter(u=>u.id!==_activeUser.id);_usersAll=_usersAll.filter(u=>u.id!==_activeUser.id);closeUserModal();renderUsers(_usersAll);setCnt('cnt-u',_usersAll.length);toast('🗑️ Deleted');}catch(e){toast('Error: '+e.message,false);}
 };
 window.delItem=async(col,id,reload)=>{if(!confirm('Delete permanently?'))return;try{await deleteDoc(doc(db,col,id));toast('🗑️ Deleted');await reload();updateOv();}catch(e){toast('Error: '+e.message,false);}};
+
+// ── EDIT MODAL ──
+let _editModal=null;
+function openEdit(title,bodyHtml,saveFn){
+  // Reuse a simple inline modal (appended to body once)
+  let ov=document.getElementById('adminEditOv');
+  if(!ov){
+    ov=document.createElement('div');ov.id='adminEditOv';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:600;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px)';
+    ov.innerHTML=`<div style="background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="background:var(--ink);padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div id="aeTitle" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:#fff"></div>
+        <button onclick="closeEdit()" style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="aeBody" style="flex:1;overflow-y:auto;padding:1.4rem"></div>
+      <div style="padding:1rem 1.4rem;border-top:1px solid var(--fog3);background:var(--fog);flex-shrink:0;display:flex;gap:.75rem">
+        <button onclick="closeEdit()" style="flex:.4;padding:.75rem;background:var(--fog3);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;color:var(--text2)">Cancel</button>
+        <button id="aeSaveBtn" style="flex:1;padding:.75rem;background:var(--sky);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:#fff;cursor:pointer;box-shadow:0 3px 12px rgba(26,111,168,.25)"><i class="fas fa-save"></i> Save Changes</button>
+      </div>
+    </div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click',e=>{if(e.target===ov)closeEdit();});
+  }
+  document.getElementById('aeTitle').textContent=title;
+  document.getElementById('aeBody').innerHTML=`<div class="alert" id="aeAlert" style="display:none;margin-bottom:.9rem"></div>`+bodyHtml;
+  document.getElementById('aeSaveBtn').onclick=async()=>{
+    const al=document.getElementById('aeAlert');al.style.display='none';
+    const btn=document.getElementById('aeSaveBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+    try{await saveFn();toast('✅ Updated!');closeEdit();}
+    catch(e){al.textContent='Error: '+e.message;al.style.cssText='display:block;background:#fff1f1;border:1px solid rgba(224,84,84,.2);color:var(--red);padding:.7rem 1rem;border-radius:10px;font-size:.8rem;font-weight:500;margin-bottom:.9rem';}
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Save Changes';
+  };
+  ov.style.display='flex';
+}
+function closeEdit(){const ov=document.getElementById('adminEditOv');if(ov)ov.style.display='none';}
+const ef=(id)=>document.getElementById(id)?.value?.trim()||'';
+
+// Helper: edit select HTML
+function selHtml(id,opts,val){return `<div style="position:relative"><select id="${id}" style="width:100%;padding:.72rem .95rem;border:1.5px solid var(--fog3);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.87rem;background:var(--fog);color:var(--text);outline:none;appearance:none"><option value="">— Select —</option>${opts.map(o=>`<option value="${o.v}" ${o.v===val?'selected':''}>${o.l}</option>`).join('')}</select><span style="position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none">▾</span></div>`;}
+function fgHtml(label,inputHtml){return `<div style="margin-bottom:.85rem"><label style="display:block;font-weight:600;font-size:.72rem;color:var(--text2);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em">${label}</label>${inputHtml}</div>`;}
+function inp(id,val='',type='text',ph=''){return `<input id="${id}" type="${type}" value="${val.replace(/"/g,'&quot;')}" placeholder="${ph}" style="width:100%;padding:.72rem .95rem;border:1.5px solid var(--fog3);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.87rem;background:var(--fog);color:var(--text);outline:none"/>`;}
+function ta(id,val=''){return `<textarea id="${id}" style="width:100%;padding:.72rem .95rem;border:1.5px solid var(--fog3);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.87rem;background:var(--fog);color:var(--text);outline:none;resize:vertical;min-height:90px;line-height:1.5">${val.replace(/</g,'&lt;')}</textarea>`;}
+
+// ── COURSE EDIT ──
+window.editCourse=async(id)=>{
+  const c=_coursesAll.find(x=>x.id===id);if(!c)return;
+  openEdit('✏️ Edit Course',
+    fgHtml('Course Name *',inp('ecName',c.name))+
+    fgHtml('Course Code',inp('ecCode',c.code||''))+
+    fgHtml('Icon (emoji)',inp('ecIcon',c.icon||'','text'))+
+    fgHtml('Description',ta('ecDesc',c.description||'')),
+    async()=>{
+      const name=ef('ecName');if(!name)throw new Error('Course name required');
+      await updateDoc(doc(db,'courses',id),{name,code:ef('ecCode'),icon:ef('ecIcon')||'📚',description:ef('ecDesc')});
+      await loadCourses();updateOv();
+    }
+  );
+};
+
+// ── RESOURCE EDIT ──
+const RES_TYPES=[{v:'term1',l:'📘 Term 1'},{v:'term2',l:'📗 Term 2'},{v:'term3',l:'📙 Term 3'},{v:'sessional',l:'📋 Sessional'},{v:'prof_alick',l:'⭐ Prof Alick A+ Series'},{v:'reference',l:'📚 Reference Books'},{v:'slides',l:'🖥️ Slides'},{v:'assignment',l:'✏️ Assignment'},{v:'practical',l:'🔬 Practical Guide'},{v:'other',l:'📁 Other'}];
+window.editResource=async(id)=>{
+  const r=_resAll.find(x=>x.id===id);if(!r)return;
+  openEdit('✏️ Edit Resource',
+    fgHtml('Title *',inp('erTitle',r.title||''))+
+    fgHtml('Type *',selHtml('erType',RES_TYPES,r.type||''))+
+    fgHtml('Course Name',inp('erCourse',r.course||''))+
+    fgHtml('Google Drive Link',inp('erLink',r.driveLink||'','url','https://drive.google.com/…'))+
+    fgHtml('Description',inp('erDesc',r.description||'')),
+    async()=>{
+      const title=ef('erTitle');if(!title)throw new Error('Title required');
+      await updateDoc(doc(db,'resources',id),{title,type:document.getElementById('erType').value,course:ef('erCourse'),driveLink:ef('erLink'),description:ef('erDesc')});
+      await loadResources();updateOv();
+    }
+  );
+};
+
+// ── VIDEO EDIT ──
+window.editVideo=async(id)=>{
+  const v=_videos.find(x=>x.id===id);if(!v)return;
+  openEdit('✏️ Edit Video',
+    fgHtml('Title *',inp('evTitle',v.title||''))+
+    fgHtml('Course Name',inp('evCourse',v.course||''))+
+    fgHtml('Drive / YouTube Link',inp('evLink',v.driveLink||v.url||'','url','https://…'))+
+    fgHtml('Description',inp('evDesc',v.description||'')),
+    async()=>{
+      const title=ef('evTitle');if(!title)throw new Error('Title required');
+      const link=ef('evLink');
+      await updateDoc(doc(db,'videos',id),{title,course:ef('evCourse'),driveLink:link,url:link,description:ef('evDesc')});
+      await loadVideos();
+    }
+  );
+};
+
+// ── PAST PAPER EDIT ──
+window.editPaper=async(id)=>{
+  const p=_papers.find(x=>x.id===id);if(!p)return;
+  openEdit('✏️ Edit Past Paper',
+    fgHtml('Exam Title *',inp('epTitle',p.title||''))+
+    fgHtml('Course',inp('epCourse',p.course||''))+
+    fgHtml('Year *',inp('epYear',p.year||'','number'))+
+    fgHtml('Duration',inp('epDuration',p.duration||''))+
+    fgHtml('Total Marks',inp('epMarks',p.marks||''))+
+    fgHtml('📄 Paper Drive Link',inp('epPaper',p.paperLink||'','url','https://drive.google.com/…'))+
+    fgHtml('✅ Marking Scheme Link',inp('epScheme',p.schemeLink||'','url','https://drive.google.com/…'))+
+    fgHtml('💡 Model Answers Link',inp('epModel',p.modelLink||'','url','https://drive.google.com/…')),
+    async()=>{
+      const title=ef('epTitle');if(!title)throw new Error('Title required');
+      await updateDoc(doc(db,'pastpapers',id),{title,course:ef('epCourse'),year:parseInt(document.getElementById('epYear').value)||0,duration:ef('epDuration'),marks:ef('epMarks'),paperLink:ef('epPaper'),schemeLink:ef('epScheme'),modelLink:ef('epModel')});
+      await loadPapers();
+    }
+  );
+};
+
+// ── FLASHCARD EDIT ──
+window.editFlashcard=async(id)=>{
+  const f=_cards.find(x=>x.id===id);if(!f)return;
+  openEdit('✏️ Edit Flashcard',
+    fgHtml('Question *',ta('efQ',f.question||''))+
+    fgHtml('Answer *',ta('efA',f.answer||''))+
+    fgHtml('Course (optional)',inp('efCourse',f.course||'')),
+    async()=>{
+      const q=document.getElementById('efQ').value.trim(),a=document.getElementById('efA').value.trim();
+      if(!q||!a)throw new Error('Question and answer required');
+      await updateDoc(doc(db,'flashcards',id),{question:q,answer:a,course:ef('efCourse')});
+      await loadFlashcards();
+    }
+  );
+};
+
+// ── ANNOUNCEMENT EDIT ──
+const ANN_TARGETS=['All Students','First Year','Second Year','Third Year','Fourth Year'];
+const ANN_PRIOS=['Normal','High','Urgent'];
+window.editAnnouncement=async(id)=>{
+  const a=_ann.find(x=>x.id===id);if(!a)return;
+  openEdit('✏️ Edit Announcement',
+    fgHtml('Title *',inp('eanTitle',a.title||''))+
+    fgHtml('Message *',ta('eanBody',a.body||''))+
+    fgHtml('Target Audience',selHtml('eanTarget',ANN_TARGETS.map(t=>({v:t,l:t})),a.target||'All Students'))+
+    fgHtml('Priority',selHtml('eanPrio',ANN_PRIOS.map(p=>({v:p,l:p})),a.priority||'Normal')),
+    async()=>{
+      const title=ef('eanTitle'),body=document.getElementById('eanBody').value.trim();
+      if(!title||!body)throw new Error('Title and message required');
+      await updateDoc(doc(db,'announcements',id),{title,body,target:document.getElementById('eanTarget').value,priority:document.getElementById('eanPrio').value});
+      await loadAnnouncements();
+    }
+  );
+};
+
 loadAll();
 </script>
 </body>
